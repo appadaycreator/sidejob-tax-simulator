@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>副業収入・税金シミュレーター｜手取り額・確定申告の必要性を無料計算</title>
+    <meta name="description" content="副業の手取り額・所得税・住民税を無料でシミュレーション。確定申告が必要かどうかも即判定。フリーランス・アルバイト・せどり・ブログ・YouTube・株など11種類の副業に対応。">
+    <meta name="keywords" content="副業,税金,シミュレーター,確定申告,手取り,所得税,住民税,フリーランス,せどり,アフィリエイト,計算">
+    <link rel="canonical" href="https://appadaycreator.github.io/sidejob-tax-simulator/">
+    <meta property="og:title" content="副業収入・税金シミュレーター｜手取り額・確定申告の必要性を無料計算">
+    <meta property="og:description" content="副業の手取り額・所得税・住民税を無料でシミュレーション。確定申告が必要かどうかも即判定。11種類の副業に対応。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://appadaycreator.github.io/sidejob-tax-simulator/">
+    <meta property="og:image" content="https://appadaycreator.github.io/assets/ogp-default.png">
+    <meta property="og:site_name" content="副業収入・税金シミュレーター">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="副業収入・税金シミュレーター｜手取り額を無料計算">
+    <meta name="twitter:description" content="副業の手取り額・税金・確定申告の必要性を無料でシミュレーション。">
+    <meta name="twitter:image" content="https://appadaycreator.github.io/assets/ogp-default.png">
+    <!-- GTM -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TXQGZRF9');</script>
+    <!-- Clarity -->
+    <script>(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","s3t9vl8h3v");</script>
+    <!-- AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8427583028015858" crossorigin="anonymous"></script>
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"WebApplication","name":"副業収入・税金シミュレーター","url":"https://appadaycreator.github.io/sidejob-tax-simulator/","description":"副業の手取り額・所得税・住民税を無料でシミュレーション。確定申告が必要かどうかも即判定。","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"}}
+    </script>
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+      {"@type":"Question","name":"副業収入はいくらから確定申告が必要ですか？","acceptedAnswer":{"@type":"Answer","text":"給与所得者（会社員）の場合、副業の所得（収入－経費）が年間20万円を超えると確定申告が必要です。20万円以下でも住民税の申告は必要なため、お住まいの市区町村に確認してください。"}},
+      {"@type":"Question","name":"副業収入にかかる税金はいくらですか？","acceptedAnswer":{"@type":"Answer","text":"副業所得は本業の給与所得と合算して課税されます。所得税率は所得に応じて5〜45%（累進課税）、住民税は一律10%です。さらに復興特別所得税として所得税額の2.1%が加算されます。"}},
+      {"@type":"Question","name":"副業の経費は何が認められますか？","acceptedAnswer":{"@type":"Answer","text":"副業に直接関連する費用が経費として認められます。例：パソコン・通信費（按分）、書籍・セミナー代、交通費、広告費、外注費など。領収書を保存し、事業との関連性を説明できることが重要です。"}},
+      {"@type":"Question","name":"副業の税金を節約する方法はありますか？","acceptedAnswer":{"@type":"Answer","text":"①青色申告（65万円控除）の活用、②経費の正確な計上、③iDeCoで課税所得を減らす、④小規模企業共済の活用（フリーランスのみ）などが効果的です。副業収入が増えてきたら税理士への相談もおすすめです。"}}
+    ]}
+    </script>
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{font-family:'Hiragino Sans','Meiryo',sans-serif;background:#fafff5;color:#1e293b;line-height:1.6;}
+        .header{background:linear-gradient(135deg,#14532d 0%,#16a34a 60%,#4ade80 100%);color:#fff;padding:20px 16px 0;text-align:center;}
+        .header h1{font-size:clamp(1.1rem,4vw,1.5rem);font-weight:800;margin-bottom:6px;}
+        .header p{font-size:0.82rem;opacity:0.9;margin-bottom:16px;}
+        .tabs{display:flex;background:rgba(0,0,0,0.2);border-radius:12px 12px 0 0;max-width:540px;margin:0 auto;}
+        .tab{flex:1;padding:11px 4px;font-size:0.78em;font-weight:700;color:rgba(255,255,255,0.75);cursor:pointer;border:none;background:none;transition:all .2s;}
+        .tab.active{background:#fff;color:#16a34a;border-radius:8px 8px 0 0;}
+        .main{max-width:540px;margin:0 auto;padding:0 12px 60px;}
+        .panel{display:none;padding-top:14px;}
+        .panel.active{display:block;}
+        .card{background:#fff;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.07);padding:18px;margin-bottom:14px;}
+        .card-title{font-size:0.9rem;font-weight:700;color:#16a34a;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+        label{display:block;font-size:0.8rem;font-weight:600;color:#475569;margin-bottom:4px;margin-top:12px;}
+        select,input[type=number]{width:100%;padding:10px 12px;border:1px solid #bbf7d0;border-radius:9px;font-size:0.88em;background:#f0fdf4;color:#1e293b;outline:none;}
+        select:focus,input[type=number]:focus{border-color:#16a34a;background:#fff;}
+        input[type=range]{width:100%;accent-color:#16a34a;cursor:pointer;}
+        .val-display{font-size:1.4rem;font-weight:800;color:#16a34a;text-align:center;margin:4px 0;}
+        /* 結果 */
+        .result-hero{border-radius:12px;padding:20px;text-align:center;margin-bottom:14px;}
+        .result-hero.ok{background:linear-gradient(135deg,#14532d,#16a34a);}
+        .result-hero.warn{background:linear-gradient(135deg,#854d0e,#d97706);}
+        .result-hero.danger{background:linear-gradient(135deg,#991b1b,#dc2626);}
+        .result-hero,.result-hero *{color:#fff;}
+        .result-hero .main-val{font-size:2rem;font-weight:800;margin:6px 0;}
+        .result-hero .sub{font-size:0.82em;opacity:0.9;}
+        .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+        .result-box{border-radius:10px;padding:12px;text-align:center;}
+        .result-box.green{background:#f0fdf4;border:1px solid #86efac;}
+        .result-box.red{background:#fff1f2;border:1px solid #fca5a5;}
+        .result-box.yellow{background:#fefce8;border:1px solid #fde68a;}
+        .result-box.blue{background:#eff6ff;border:1px solid #bfdbfe;}
+        .result-box .val{font-size:1.2rem;font-weight:800;}
+        .result-box.green .val{color:#16a34a;}
+        .result-box.red .val{color:#dc2626;}
+        .result-box.yellow .val{color:#92400e;}
+        .result-box.blue .val{color:#1d4ed8;}
+        .result-box .lbl{font-size:0.72em;color:#64748b;margin-top:2px;}
+        /* 申告バッジ */
+        .badge-required{display:inline-block;background:#dc2626;color:#fff;border-radius:8px;padding:8px 16px;font-size:0.88em;font-weight:700;}
+        .badge-ok{display:inline-block;background:#16a34a;color:#fff;border-radius:8px;padding:8px 16px;font-size:0.88em;font-weight:700;}
+        .badge-caution{display:inline-block;background:#d97706;color:#fff;border-radius:8px;padding:8px 16px;font-size:0.88em;font-weight:700;}
+        /* ゾーン表 */
+        .zone-table{width:100%;border-collapse:collapse;font-size:0.82em;}
+        .zone-table th{background:#16a34a;color:#fff;padding:7px 6px;text-align:center;}
+        .zone-table td{padding:6px;text-align:center;border-bottom:1px solid #dcfce7;}
+        .zone-table tr.current td{background:#fef9c3;font-weight:700;}
+        /* 節税Tips */
+        .tip-item{padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:0.83em;color:#475569;display:flex;gap:8px;}
+        .tip-item:last-child{border:none;}
+        /* ガイドステップ */
+        .guide-step{background:#f0fdf4;border-left:4px solid #16a34a;border-radius:0 8px 8px 0;padding:12px 14px;margin-bottom:10px;}
+        .guide-step .num{font-size:0.72em;font-weight:700;color:#16a34a;text-transform:uppercase;}
+        .guide-step .title{font-size:0.9rem;font-weight:700;color:#1e293b;margin:2px 0;}
+        .guide-step .desc{font-size:0.8em;color:#475569;}
+        /* リンク */
+        .related-link{display:block;background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:12px;text-decoration:none;color:#16a34a;font-size:0.85em;font-weight:600;margin-bottom:8px;}
+        .amz-btn{display:inline-block;background:#ff9900;color:#fff;padding:9px 18px;border-radius:8px;font-size:0.83em;font-weight:700;text-decoration:none;margin:4px;}
+        /* 副業タイプ選択 */
+        .type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px;}
+        .type-btn{border:2px solid #bbf7d0;background:#fff;border-radius:10px;padding:10px 4px;text-align:center;cursor:pointer;font-size:0.78em;font-weight:600;color:#475569;transition:all .15s;}
+        .type-btn:hover{border-color:#16a34a;color:#16a34a;}
+        .type-btn.selected{border-color:#16a34a;background:#f0fdf4;color:#16a34a;}
+        .type-btn .emoji{font-size:1.3em;display:block;margin-bottom:3px;}
+        /* レンジバー */
+        .income-range-bar{height:10px;border-radius:5px;background:#e2e8f0;margin:8px 0;position:relative;overflow:hidden;}
+        .income-range-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#16a34a,#4ade80);transition:width .4s;}
+    </style>
+</head>
+<body>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TXQGZRF9" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+<div class="header">
+    <h1>💰 副業収入・税金<br>シミュレーター</h1>
+    <p>手取り額・所得税・確定申告の必要性を無料で即計算</p>
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('calc',this)">🧮 計算</button>
+        <button class="tab" onclick="switchTab('zones',this)">📊 税率表</button>
+        <button class="tab" onclick="switchTab('tips',this)">💡 節税Tips</button>
+        <button class="tab" onclick="switchTab('guide',this)">📋 申告ガイド</button>
+    </div>
+</div>
+
+<div class="main">
+
+<!-- ===== 計算タブ ===== -->
+<div id="panel-calc" class="panel active">
+    <div class="card">
+        <div class="card-title">💼 副業の種類を選んでください</div>
+        <div class="type-grid" id="type-grid"></div>
+        <div id="type-note" style="font-size:0.75em;color:#64748b;margin-top:8px;padding:8px;background:#f8fafc;border-radius:6px;"></div>
+    </div>
+    <div class="card">
+        <div class="card-title">💴 収入・控除の設定</div>
+        <label>📅 副業の月収入（売上・報酬）</label>
+        <input type="range" id="side-income" min="10000" max="500000" step="5000" value="50000" oninput="updateCalc()">
+        <div class="val-display" id="side-income-disp">月 5万円</div>
+        <label>💼 本業の年収（課税所得算出のため）</label>
+        <select id="main-income" onchange="updateCalc()">
+            <option value="3000000">〜300万円</option>
+            <option value="4000000" selected>〜400万円</option>
+            <option value="5000000">〜500万円</option>
+            <option value="6000000">〜600万円</option>
+            <option value="7000000">〜700万円</option>
+            <option value="9000000">〜900万円</option>
+            <option value="12000000">〜1,200万円</option>
+        </select>
+        <label>📦 経費の割合（副業収入に対する%）</label>
+        <input type="range" id="expense-rate" min="0" max="80" step="5" value="20" oninput="updateCalc()">
+        <div class="val-display" id="expense-disp">経費 20%</div>
+        <label>📝 申告方法</label>
+        <select id="declare-type" onchange="updateCalc()">
+            <option value="white">白色申告（経費のみ控除）</option>
+            <option value="blue65">青色申告・65万円控除（e-Tax推奨）</option>
+            <option value="blue10">青色申告・10万円控除（簡易帳簿）</option>
+        </select>
+    </div>
+    <!-- 結果 -->
+    <div id="calc-result"></div>
+</div>
+
+<!-- ===== 税率ゾーン表タブ ===== -->
+<div id="panel-zones" class="panel">
+    <div class="card">
+        <div class="card-title">📊 副業所得ゾーン別 税負担シミュレーション</div>
+        <label>💼 本業年収</label>
+        <select id="zone-main-income" onchange="updateZones()">
+            <option value="3000000">〜300万円</option>
+            <option value="4000000" selected>〜400万円</option>
+            <option value="5000000">〜500万円</option>
+            <option value="6000000">〜600万円</option>
+            <option value="7000000">〜700万円</option>
+            <option value="9000000">〜900万円</option>
+        </select>
+        <div id="zone-table-wrap" style="margin-top:14px;overflow-x:auto;"></div>
+    </div>
+</div>
+
+<!-- ===== 節税Tipsタブ ===== -->
+<div id="panel-tips" class="panel">
+    <div class="card">
+        <div class="card-title">💡 副業税金を合法的に減らす6つの方法</div>
+        <div class="tip-item"><span>①</span><div><strong>経費を漏れなく計上する</strong>PC・通信費・書籍・交通費・外注費・広告費など副業に関連する費用は全て経費に。レシートを必ず保存。</div></div>
+        <div class="tip-item"><span>②</span><div><strong>青色申告65万円控除を活用</strong>e-Taxで確定申告すると所得から65万円が控除。年間で最大6〜13万円の節税効果。複式簿記が必要だがfreee/マネーフォワードで自動化可能。</div></div>
+        <div class="tip-item"><span>③</span><div><strong>iDeCoで課税所得を減らす</strong>iDeCoの掛金は全額所得控除。副業収入が増えた分をiDeCoに回すと節税しながら老後資産も形成できる。</div></div>
+        <div class="tip-item"><span>④</span><div><strong>小規模企業共済（フリーランス向け）</strong>月最大7万円（年84万円）の掛金が全額所得控除。解約時にまとまった退職金として受け取れる。</div></div>
+        <div class="tip-item"><span>⑤</span><div><strong>ふるさと納税で住民税を節約</strong>副業で住民税が増える分を見越してふるさと納税の上限額が増加。返礼品を活用して実質的な節税に。</div></div>
+        <div class="tip-item"><span>⑥</span><div><strong>副業収入を家族に分散（法人化）</strong>副業収入が年300万円超になったら個人事業主→法人化も検討。法人税率は実効23%程度で高所得者には有利。</div></div>
+    </div>
+    <div class="card">
+        <div class="card-title">🔗 節税に役立つツール</div>
+        <a href="https://appadaycreator.github.io/nisa-ideco-simulator/" class="related-link">📈 新NISA・iDeCo計算機 → 副業収益を非課税で運用</a>
+        <a href="https://appadaycreator.github.io/fire-calculator/" class="related-link">🔥 FIRE計算機 → 副業収益でいつリタイアできる？</a>
+        <a href="https://appadaycreator.github.io/side-job-aptitude-test/" class="related-link">🎯 副業適性診断 → あなたに向いている副業は？</a>
+    </div>
+    <div class="card" style="text-align:center;">
+        <div class="card-title" style="justify-content:center;">📚 副業・節税の参考書</div>
+        <a href="https://www.amazon.co.jp/s?k=副業+税金+確定申告+本&tag=appadaycrea0f-22" target="_blank" rel="noopener noreferrer" class="js-track-affiliate amz-btn" data-platform="Amazon" data-item-name="副業税金本" data-link-type="affiliate_link">💰 副業の税金入門</a>
+        <a href="https://www.amazon.co.jp/s?k=青色申告+フリーランス+確定申告&tag=appadaycrea0f-22" target="_blank" rel="noopener noreferrer" class="js-track-affiliate amz-btn" data-platform="Amazon" data-item-name="青色申告本" data-link-type="affiliate_link">📝 青色申告ガイド</a>
+        <a href="https://www.amazon.co.jp/s?k=副業+稼ぎ方+2024&tag=appadaycrea0f-22" target="_blank" rel="noopener noreferrer" class="js-track-affiliate amz-btn" data-platform="Amazon" data-item-name="副業稼ぎ方本" data-link-type="affiliate_link">🚀 副業の稼ぎ方</a>
+    </div>
+</div>
+
+<!-- ===== 申告ガイドタブ ===== -->
+<div id="panel-guide" class="panel">
+    <div class="card">
+        <div class="card-title">📋 確定申告 判定フローチャート</div>
+        <div style="background:#f0fdf4;border-radius:8px;padding:14px;font-size:0.83em;color:#1e293b;">
+            <p style="font-weight:700;color:#16a34a;margin-bottom:8px;">会社員（給与所得者）の場合：</p>
+            <div style="padding-left:12px;">
+                <p>✅ 副業所得 ≤ 20万円 → <strong>確定申告不要</strong>（住民税申告は必要）</p>
+                <p style="margin-top:6px;">❗ 副業所得 > 20万円 → <strong>確定申告必要</strong></p>
+                <p style="margin-top:6px;">❗ 医療費控除・ふるさと納税が多い → <strong>確定申告推奨</strong></p>
+            </div>
+            <p style="font-weight:700;color:#16a34a;margin-top:12px;margin-bottom:8px;">フリーランス・個人事業主の場合：</p>
+            <div style="padding-left:12px;">
+                <p>❗ 所得（収入－経費）が 48万円超 → <strong>確定申告必要</strong></p>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-title">🗓️ 確定申告の手順（会社員・副業編）</div>
+        <div class="guide-step"><div class="num">STEP 1（1〜12月）</div><div class="title">収入と経費を記録する</div><div class="desc">領収書・請求書を保存。クラウド会計（freee・マネーフォワード）で自動集計するのがおすすめ。</div></div>
+        <div class="guide-step"><div class="num">STEP 2（翌年1月）</div><div class="title">源泉徴収票を受け取る</div><div class="desc">本業の会社から源泉徴収票をもらう。確定申告に必要です。</div></div>
+        <div class="guide-step"><div class="num">STEP 3（2〜3月）</div><div class="title">確定申告書を作成・提出</div><div class="desc">国税庁「確定申告書等作成コーナー」またはe-Taxで作成。2月16日〜3月15日が申告期間。</div></div>
+        <div class="guide-step"><div class="num">STEP 4（3〜5月）</div><div class="title">税金を納付する</div><div class="desc">追加の所得税・住民税を納付。口座振替・クレジットカード払い・コンビニ払いが可能。</div></div>
+    </div>
+    <div class="card">
+        <div class="card-title">❓ よくある質問</div>
+        <details style="margin-bottom:10px;"><summary style="cursor:pointer;font-size:0.88em;font-weight:600;padding:4px 0;">副業が会社にバレませんか？</summary><p style="font-size:0.8em;color:#475569;padding:8px 0 0 12px;">住民税の普通徴収を選択することで、副業分の住民税が別途自分で支払いになり、会社への通知を減らせます。ただし完全にバレない保証はありません。確定申告時に「自分で納付」を選択してください。</p></details>
+        <details style="margin-bottom:10px;"><summary style="cursor:pointer;font-size:0.88em;font-weight:600;padding:4px 0;">副業の税金はいつ払うの？</summary><p style="font-size:0.8em;color:#475569;padding:8px 0 0 12px;">確定申告（2〜3月）後に納税額が確定します。所得税は3月15日まで、住民税は翌年6月〜翌々年5月の4回分割で納付します。</p></details>
+        <details style="margin-bottom:10px;"><summary style="cursor:pointer;font-size:0.88em;font-weight:600;padding:4px 0;">副業収入をNISAに入れられますか？</summary><p style="font-size:0.8em;color:#475569;padding:8px 0 0 12px;">はい。副業で稼いだお金をNISA口座で投資できます。税金を差し引いた手取り分をNISAで非課税運用するのが最も効率的です。</p></details>
+        <details><summary style="cursor:pointer;font-size:0.88em;font-weight:600;padding:4px 0;">アフィリエイト収入は何所得になりますか？</summary><p style="font-size:0.8em;color:#475569;padding:8px 0 0 12px;">継続的に行っている場合は「事業所得」または「雑所得」になります。2022年の改正で収入300万円以下は原則雑所得となりましたが、帳簿記帳をしていれば事業所得として認められる場合があります。</p></details>
+    </div>
+</div>
+
+</div>
+
+<script>
+const TYPES = [
+    { id: 'freelance', name: 'フリーランス', emoji: '💻', note: '雑所得または事業所得。経費計上可。確定申告が重要。', expRate: 30, taxType: 'general' },
+    { id: 'arbeit',    name: 'アルバイト',  emoji: '🏪', note: '給与所得扱い（給与所得控除あり）。他社給与として合算。', expRate: 0, taxType: 'salary' },
+    { id: 'resale',    name: 'せどり・物販', emoji: '📦', note: '雑所得または事業所得。仕入れ・送料・梱包費が経費に。', expRate: 50, taxType: 'general' },
+    { id: 'youtube',   name: 'YouTube',    emoji: '🎥', note: '雑所得。機材・通信費・編集ソフトが経費になる場合あり。', expRate: 20, taxType: 'general' },
+    { id: 'blog',      name: 'ブログ・アフィリ', emoji: '✍️', note: '雑所得または事業所得。サーバー代・ドメイン代・書籍費が経費。', expRate: 15, taxType: 'general' },
+    { id: 'stock',     name: '株式投資',   emoji: '📈', note: '申告分離課税20.315%固定。NISA口座なら非課税。損益通算可。', expRate: 0, taxType: 'stock' },
+    { id: 'fx',        name: 'FX',         emoji: '💱', note: '申告分離課税20.315%固定。雑所得（総合課税）と選択可。', expRate: 0, taxType: 'stock' },
+    { id: 'realestate',name: '不動産収入', emoji: '🏠', note: '不動産所得。固定資産税・修繕費・管理費・減価償却が経費。', expRate: 40, taxType: 'general' },
+    { id: 'handmade',  name: 'ハンドメイド', emoji: '🎨', note: '雑所得または事業所得。材料費・出展費が経費に。', expRate: 35, taxType: 'general' },
+    { id: 'tutor',     name: '家庭教師・講師', emoji: '📚', note: '給与または雑所得。個人契約は雑所得。交通費が経費。', expRate: 10, taxType: 'general' },
+    { id: 'other',     name: 'その他',     emoji: '🔧', note: '雑所得として計算。副業に関連する費用は経費計上できます。', expRate: 20, taxType: 'general' },
+];
+
+// 所得税率テーブル（課税所得）
+const TAX_BRACKETS = [
+    { limit: 1950000,   rate: 0.05,  deduction: 0 },
+    { limit: 3300000,   rate: 0.10,  deduction: 97500 },
+    { limit: 6950000,   rate: 0.20,  deduction: 427500 },
+    { limit: 9000000,   rate: 0.23,  deduction: 636000 },
+    { limit: 18000000,  rate: 0.33,  deduction: 1536000 },
+    { limit: 40000000,  rate: 0.40,  deduction: 2796000 },
+    { limit: Infinity,  rate: 0.45,  deduction: 4796000 },
+];
+
+// 給与所得控除
+function salaryDeduction(income) {
+    if (income <= 1625000)  return 550000;
+    if (income <= 1800000)  return income * 0.4 - 100000;
+    if (income <= 3600000)  return income * 0.3 + 80000;
+    if (income <= 6600000)  return income * 0.2 + 440000;
+    if (income <= 8500000)  return income * 0.1 + 1100000;
+    return 1950000;
+}
+
+// 基礎控除
+const BASIC_DEDUCTION = 480000;
+
+function calcIncomeTax(taxableIncome) {
+    if (taxableIncome <= 0) return 0;
+    for (const b of TAX_BRACKETS) {
+        if (taxableIncome <= b.limit) {
+            return Math.floor(taxableIncome * b.rate - b.deduction);
+        }
+    }
+    return 0;
+}
+
+function fmt(n) { return Math.round(n).toLocaleString(); }
+function fmtW(n) { return n >= 10000 ? Math.floor(n/10000) + '万' + (n%10000>0?Math.floor((n%10000)/1000)+'千':'') + '円' : fmt(n) + '円'; }
+
+let selectedType = TYPES[0];
+let typeExpRate = 20;
+
+function buildTypeGrid() {
+    const grid = document.getElementById('type-grid');
+    grid.innerHTML = TYPES.map(t =>
+        `<button class="type-btn ${t.id === selectedType.id ? 'selected' : ''}" onclick="selectType('${t.id}')">
+            <span class="emoji">${t.emoji}</span>${t.name}
+        </button>`
+    ).join('');
+    document.getElementById('type-note').textContent = selectedType.note;
+}
+
+function selectType(id) {
+    selectedType = TYPES.find(t => t.id === id) || TYPES[0];
+    document.getElementById('expense-rate').value = selectedType.expRate;
+    typeExpRate = selectedType.expRate;
+    buildTypeGrid();
+    updateCalc();
+}
+
+function updateCalc() {
+    const monthSideIncome = parseInt(document.getElementById('side-income').value);
+    const annualSideIncome = monthSideIncome * 12;
+    const mainIncome = parseInt(document.getElementById('main-income').value);
+    const expRate = parseInt(document.getElementById('expense-rate').value);
+    const declareType = document.getElementById('declare-type').value;
+
+    document.getElementById('side-income-disp').textContent = '月 ' + fmt(monthSideIncome) + '円（年 ' + fmtW(annualSideIncome) + '）';
+    document.getElementById('expense-disp').textContent = '経費 ' + expRate + '%（年 ' + fmtW(Math.round(annualSideIncome * expRate / 100)) + '）';
+
+    const expense = Math.round(annualSideIncome * expRate / 100);
+    let sideIncome = annualSideIncome - expense; // 副業所得（経費後）
+
+    // 青色申告控除
+    let blueDeduction = 0;
+    if (declareType === 'blue65') blueDeduction = 650000;
+    if (declareType === 'blue10') blueDeduction = 100000;
+    if (selectedType.taxType === 'salary') blueDeduction = 0; // バイトは給与所得控除のみ
+
+    // 株・FX（申告分離課税）
+    if (selectedType.taxType === 'stock') {
+        const stockTax = Math.round(sideIncome * 0.20315);
+        const takeHome = Math.round(annualSideIncome - expense - stockTax);
+        const needDeclare = sideIncome > 0;
+        renderStockResult(annualSideIncome, expense, sideIncome, stockTax, takeHome, needDeclare);
+        return;
+    }
+
+    // 副業所得から青色申告控除
+    sideIncome = Math.max(0, sideIncome - blueDeduction);
+
+    // 本業の給与所得計算
+    const mainSalaryDeduction = salaryDeduction(mainIncome);
+    const mainGrossIncome = mainIncome - mainSalaryDeduction;
+
+    // 合算課税所得
+    const totalTaxable = Math.max(0, mainGrossIncome + sideIncome - BASIC_DEDUCTION);
+    const mainOnlyTaxable = Math.max(0, mainGrossIncome - BASIC_DEDUCTION);
+
+    // 所得税計算
+    const totalIncomeTax = Math.round(calcIncomeTax(totalTaxable) * 1.021); // 復興特別所得税
+    const mainOnlyTax = Math.round(calcIncomeTax(mainOnlyTaxable) * 1.021);
+    const additionalIncomeTax = Math.max(0, totalIncomeTax - mainOnlyTax);
+
+    // 住民税（副業分）
+    const additionalJuminTax = Math.round(sideIncome * 0.10);
+
+    const totalAdditionalTax = additionalIncomeTax + additionalJuminTax;
+    const takeHome = Math.round(annualSideIncome - expense - totalAdditionalTax);
+    const effectiveTaxRate = annualSideIncome > 0 ? totalAdditionalTax / annualSideIncome * 100 : 0;
+
+    // 確定申告必要判定（会社員）
+    const rawSideIncome = annualSideIncome - expense - blueDeduction;
+    const needDeclare = rawSideIncome > 200000;
+    const nearBorder = rawSideIncome > 150000 && rawSideIncome <= 200000;
+
+    renderResult(annualSideIncome, expense, blueDeduction, sideIncome,
+        additionalIncomeTax, additionalJuminTax, totalAdditionalTax,
+        takeHome, effectiveTaxRate, needDeclare, nearBorder, declareType, rawSideIncome);
+}
+
+function renderStockResult(annual, expense, income, tax, takeHome, needDeclare) {
+    document.getElementById('calc-result').innerHTML = `
+        <div class="result-hero ${needDeclare ? 'warn' : 'ok'}">
+            <div class="sub">税引後 年間手取り（${selectedType.name}）</div>
+            <div class="main-val">${fmtW(takeHome)}</div>
+            <div class="sub">申告分離課税 20.315%固定</div>
+        </div>
+        <div class="result-grid">
+            <div class="result-box red"><div class="val">-${fmtW(tax)}</div><div class="lbl">税金（20.315%）</div></div>
+            <div class="result-box yellow"><div class="val">${fmtW(income)}</div><div class="lbl">課税対象所得</div></div>
+        </div>
+        <div class="card" style="margin-bottom:14px;text-align:center;">
+            <p style="font-size:0.82em;font-weight:700;color:#64748b;margin-bottom:8px;">確定申告の必要性</p>
+            ${needDeclare ? '<span class="badge-required">確定申告が必要</span>' : '<span class="badge-ok">申告不要（特定口座・源泉徴収あり）</span>'}
+            <p style="font-size:0.78em;color:#64748b;margin-top:8px;">NISAを活用すると非課税で運用できます</p>
+        </div>`;
+}
+
+function renderResult(annual, expense, blueDeduct, income,
+    incomeTax, juminTax, totalTax, takeHome, effRate, needDeclare, nearBorder, declareType, rawIncome) {
+
+    const heroClass = needDeclare ? 'warn' : nearBorder ? 'yellow' : 'ok';
+    const monthTakeHome = Math.round(takeHome / 12);
+
+    document.getElementById('calc-result').innerHTML = `
+        <div class="result-hero ${needDeclare ? 'warn' : 'ok'}">
+            <div class="sub">税引後 年間手取り</div>
+            <div class="main-val">${fmtW(takeHome)}</div>
+            <div class="sub">月換算 約${fmtW(monthTakeHome)} ／ 実効税率 ${effRate.toFixed(1)}%</div>
+        </div>
+        <div class="result-grid">
+            <div class="result-box red"><div class="val">-${fmtW(totalTax)}</div><div class="lbl">追加税金合計</div></div>
+            <div class="result-box yellow"><div class="val">-${fmtW(expense)}</div><div class="lbl">経費</div></div>
+            <div class="result-box red"><div class="val">-${fmtW(incomeTax)}</div><div class="lbl">所得税（追加分）</div></div>
+            <div class="result-box red"><div class="val">-${fmtW(juminTax)}</div><div class="lbl">住民税（追加分）</div></div>
+        </div>
+        <div class="card" style="margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;font-size:0.82em;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span>副業年収（総売上）</span><span style="font-weight:700;">${fmtW(annual)}</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:0.82em;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span>経費（${document.getElementById('expense-rate').value}%）</span><span style="font-weight:700;color:#dc2626;">-${fmtW(expense)}</span></div>
+            ${blueDeduct > 0 ? `<div style="display:flex;justify-content:space-between;font-size:0.82em;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span>青色申告控除</span><span style="font-weight:700;color:#dc2626;">-${fmtW(blueDeduct)}</span></div>` : ''}
+            <div style="display:flex;justify-content:space-between;font-size:0.82em;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span>課税対象副業所得</span><span style="font-weight:700;">${fmtW(income)}</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:0.82em;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span>追加所得税（復興税込）</span><span style="font-weight:700;color:#dc2626;">-${fmtW(incomeTax)}</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:0.82em;padding:5px 0;"><span>追加住民税</span><span style="font-weight:700;color:#dc2626;">-${fmtW(juminTax)}</span></div>
+        </div>
+        <div class="card" style="margin-bottom:14px;text-align:center;">
+            <p style="font-size:0.82em;font-weight:700;color:#64748b;margin-bottom:8px;">確定申告の必要性（会社員の場合）</p>
+            ${needDeclare
+                ? `<span class="badge-required">✗ 確定申告が必要</span><p style="font-size:0.75em;color:#dc2626;margin-top:6px;">副業所得が20万円を超えています（年${fmtW(rawIncome)}）</p>`
+                : nearBorder
+                    ? `<span class="badge-caution">⚠️ 20万円ボーダーに注意</span><p style="font-size:0.75em;color:#d97706;margin-top:6px;">現在${fmtW(rawIncome)}。経費・控除の計算に注意を。</p>`
+                    : `<span class="badge-ok">✓ 確定申告不要</span><p style="font-size:0.75em;color:#16a34a;margin-top:6px;">副業所得が20万円以下（${fmtW(rawIncome)}）。住民税申告は必要な場合あり。</p>`
+            }
+            ${declareType !== 'white' ? `<p style="font-size:0.72em;color:#64748b;margin-top:6px;">※青色申告を選択中。帳簿記帳・e-Tax提出が必要です。</p>` : ''}
+        </div>`;
+}
+
+function updateZones() {
+    const mainIncome = parseInt(document.getElementById('zone-main-income').value);
+    const incomes = [200000, 500000, 1000000, 2000000, 3000000, 5000000];
+    const mainSalaryDeduct = salaryDeduction(mainIncome);
+    const mainGrossIncome = mainIncome - mainSalaryDeduct;
+    const mainOnlyTaxable = Math.max(0, mainGrossIncome - BASIC_DEDUCTION);
+    const mainOnlyTax = Math.round(calcIncomeTax(mainOnlyTaxable) * 1.021);
+    const currentSideIncome = Math.round(parseInt(document.getElementById('side-income')?.value || 50000) * 12 * 0.8);
+
+    let html = `<table class="zone-table"><tr><th>年間副業所得</th><th>所得税（追加）</th><th>住民税（追加）</th><th>合計税負担</th><th>実効税率</th></tr>`;
+    for (const si of incomes) {
+        const totalTaxable = Math.max(0, mainGrossIncome + si - BASIC_DEDUCTION);
+        const totalTax = Math.round(calcIncomeTax(totalTaxable) * 1.021);
+        const addIncomeTax = Math.max(0, totalTax - mainOnlyTax);
+        const addJuminTax = Math.round(si * 0.10);
+        const total = addIncomeTax + addJuminTax;
+        const rate = (total / si * 100).toFixed(0);
+        const isCurrent = Math.abs(si - currentSideIncome) < 200000;
+        html += `<tr class="${isCurrent ? 'current' : ''}"><td>${fmtW(si)}</td><td>${fmtW(addIncomeTax)}</td><td>${fmtW(addJuminTax)}</td><td>${fmtW(total)}</td><td>${rate}%</td></tr>`;
+    }
+    html += '</table>';
+    document.getElementById('zone-table-wrap').innerHTML = html;
+}
+
+function switchTab(name, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-'+name).classList.add('active');
+    if (name === 'zones') updateZones();
+}
+
+document.addEventListener('click', function(e){
+    const el = e.target.closest('.js-track-affiliate');
+    if (!el) return;
+    if (typeof dataLayer !== 'undefined') dataLayer.push({event:'affiliate_click',affiliate_item:el.dataset.itemName,affiliate_platform:el.dataset.platform});
+});
+
+window.onerror = function(msg,src,line){try{console.error('[AppError]',msg,'at',src+':'+line);}catch(e){}return false;};
+window.addEventListener('unhandledrejection',function(e){console.error('[PromiseError]',e.reason);});
+
+document.addEventListener('DOMContentLoaded', function(){
+    buildTypeGrid();
+    updateCalc();
+    var l = document.getElementById('page-loader');
+    if (l){l.style.opacity='0';l.style.transition='opacity 0.3s';setTimeout(function(){l.remove();},350);}
+});
+</script>
+
+<div id="page-loader" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#fafff5;z-index:9999;display:flex;align-items:center;justify-content:center;">
+    <div style="width:40px;height:40px;border:4px solid #bbf7d0;border-top-color:#16a34a;border-radius:50%;animation:spin-loader 0.8s linear infinite;"></div>
+</div>
+<style>@keyframes spin-loader{to{transform:rotate(360deg)}}</style>
+</body>
+</html>
