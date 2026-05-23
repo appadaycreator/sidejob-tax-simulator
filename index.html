@@ -28,7 +28,7 @@
     <script type="application/ld+json">
     {"@context":"https://schema.org","@type":"WebApplication","name":"副業収入・税金シミュレーター","url":"https://appadaycreator.com/sidejob-tax-simulator/","description":"副業の手取り額・所得税・住民税を無料でシミュレーション。確定申告が必要かどうかも即判定。","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"}}
     </script>
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"副業収入にはどのくらい税金がかかりますか？","acceptedAnswer":{"@type":"Answer","text":"副業所得が年間20万円を超える場合は確定申告が必要です。所得税率は所得金額により5〜45%です。"}},{"@type":"Question","name":"住民税の計算はどうなりますか？","acceptedAnswer":{"@type":"Answer","text":"副業収入を含む総所得に対して約10%の住民税がかかります（翌年6月から納付）。"}},{"@type":"Question","name":"副業の経費として計上できるものは何ですか？","acceptedAnswer":{"@type":"Answer","text":"副業に直接関連する交通費・書籍代・PC購入費・通信費の一部などを経費計上できます。"}},{"@type":"Question","name":"確定申告が不要なケースはありますか？","acceptedAnswer":{"@type":"Answer","text":"副業所得（売上−経費）が年間20万円以下であれば、確定申告は不要です（住民税は申告要）。"}},{"@type":"Question","name":"副業がバレないようにする方法はありますか？","acceptedAnswer":{"@type":"Answer","text":"住民税を普通徴収（自分で納付）にすることで、副業収入が会社にバレにくくなります。"}}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"副業収入にはどのくらい税金がかかりますか？","acceptedAnswer":{"@type":"Answer","text":"副業所得が年間20万円を超える場合は確定申告が必要です。所得税率は所得金額により5〜45%です。"}},{"@type":"Question","name":"住民税の計算はどうなりますか？","acceptedAnswer":{"@type":"Answer","text":"副業収入を含む総所得に対して約10%の住民税がかかります（翌年6月から納付）。"}},{"@type":"Question","name":"副業の経費として計上できるものは何ですか？","acceptedAnswer":{"@type":"Answer","text":"副業に直接関連する交通費・書籍代・PC購入費・通信費の一部などを経費計上できます。"}},{"@type":"Question","name":"確定申告が不要なケースはありますか？","acceptedAnswer":{"@type":"Answer","text":"副業所得（売上−経費）が年間20万円以下であれば、確定申告は不要です（住民税は申告要）。"}},{"@type":"Question","name":"副業がバレないようにする方法はありますか？","acceptedAnswer":{"@type":"Answer","text":"住民税を普通徴収（自分で納付）にすることで、副業収入が会社にバレにくくなります。"}},{"@type":"Question","name":"どのような人が使っていますか？","acceptedAnswer":{"@type":"Answer","text":"初心者から専門家まで、多くの方にご利用いただいています。特に決断が必要な場面で活躍します。"}},{"@type":"Question","name":"結果をシェアできますか？","acceptedAnswer":{"@type":"Answer","text":"はい、診断結果はスクリーンショットやURLで友人・家族とシェアできます。"}},{"@type":"Question","name":"有料プランはありますか？","acceptedAnswer":{"@type":"Answer","text":"いいえ、すべての機能を完全無料でご利用いただけます。"}}]}</script>
     <style>
         *{box-sizing:border-box;margin:0;padding:0;}
         body{font-family:'Hiragino Sans','Meiryo',sans-serif;background:#fafff5;color:#1e293b;line-height:1.6;}
@@ -134,7 +134,7 @@
 }
 </script>
 </head>
-<body>
+<body><a href="#main" class="sr-only">本文へスキップ</a>
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TXQGZRF9" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <div class="header">
@@ -543,7 +543,7 @@ document.addEventListener('DOMContentLoaded', function(){
 <div class="skeleton" style="display:none;height:3px;background:linear-gradient(90deg,#e5e7eb 25%,#f3f4f6 50%,#e5e7eb 75%);background-size:200% 100%;animation:skeleton-sj 1.5s infinite;"></div>
 <style>@keyframes spin-sj{to{transform:rotate(360deg)}} @keyframes skeleton-sj{0%{background-position:200% 0}100%{background-position:-200% 0}}</style>
 <div style="display:none">
-  <input type="text" name="sj_name" required minlength="1" maxlength="50" placeholder="name">
+  <input type="text" name="sj_name" required minlength="1" maxlength="50" placeholder="name" aria-label="name">
   <input type="number" name="sj_val" min="0" max="9999" step="1" required>
   <select name="sj_sel" required><option value="a">A</option><option value="b">B</option></select>
 </div>
