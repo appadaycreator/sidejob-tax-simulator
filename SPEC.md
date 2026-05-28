@@ -3,8 +3,18 @@
 ## 概要
 
 **サービス名**: Sidejob Tax Simulator
-**バージョン**: 1.0.0
-**更新日**: 2026-05-27
+**バージョン**: 1.1.0
+**更新日**: 2026-05-28
+
+## 変更履歴
+
+### v1.1.0 (2026-05-28)
+- PWA theme-color を全5ページで #6366f1（インディゴ）→ #16a34a（グリーン）に修正
+- page-loader-sj の spinner 色をブランドカラーに統一
+- OGP画像参照を ogp-default.png → sidejob-tax-simulator/ogp.png に変更
+- social-proof セクションのTailwindクラスをインラインスタイルに変換
+- 末尾の大量重複コメントを削除（ファイルサイズ削減）
+- フッター著作権年を 2025 → 2025-2026 に修正
 **URL**: https://appadaycreator.com/sidejob-tax-simulator/
 
 副業収入・経費を入力して確定申告の所得税・住民税を無料計算。20万円ルールの判定も対応。
