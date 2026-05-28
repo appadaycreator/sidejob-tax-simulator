@@ -142,7 +142,7 @@ button, .btn, .btn-primary, .option-btn, [role="button"] { min-height: 48px; min
     "headline": "副業税金計算【無料】確定申告いくら？副業収入・所得税シミュレーター",
     "description": "副業収入・経費を入力して確定申告の所得税・住民税を無料計算。20万円ルールの判定も対応。",
     "datePublished": "2026-05-23",
-    "dateModified": "2026-05-23",
+    "dateModified": "2026-05-29",
     "author": {
       "@type": "Organization",
       "name": "appadaycreator"
@@ -163,7 +163,7 @@ button, .btn, .btn-primary, .option-btn, [role="button"] { min-height: 48px; min
 @media(max-width:480px){button,[class*=btn]{min-height:48px!important;font-size:15px!important;}input,select,textarea{font-size:16px!important;min-height:44px!important;}[class*=card],[class*=max-w]{padding:16px!important;}}
 </style>
 
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "HowTo", "name": "副業税金計算の使い方", "step": [{"@type": "HowToStep", "position": 1, "name": "ステップ1", "text": "ページを開き、入力フォームの項目を確認する"}, {"@type": "HowToStep", "position": 2, "name": "ステップ2", "text": "必要な情報を入力または選択する"}, {"@type": "HowToStep", "position": 3, "name": "ステップ3", "text": "実行ボタンをクリックして結果を取得する"}, {"@type": "HowToStep", "position": 4, "name": "ステップ4", "text": "表示された結果・アドバイスを確認する"}, {"@type": "HowToStep", "position": 5, "name": "ステップ5", "text": "必要に応じてコピー・SNSシェアで活用する"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "HowTo", "name": "副業税金計算の使い方", "step": [{"@type": "HowToStep", "position": 1, "name": "副業の種類を選ぶ", "text": "フリーランス・アルバイト・せどり・YouTubeなど11種類から自分の副業タイプを選択する"}, {"@type": "HowToStep", "position": 2, "name": "収入と経費を入力する", "text": "副業の月収入をスライダーまたは数値入力で設定し、経費の割合（%）を調整する"}, {"@type": "HowToStep", "position": 3, "name": "本業年収と申告方法を選ぶ", "text": "本業の年収レンジを選択し、白色申告・青色申告65万円控除・10万円控除のいずれかを選ぶ"}, {"@type": "HowToStep", "position": 4, "name": "計算結果を確認する", "text": "税引後の年間手取り額・追加所得税・住民税・確定申告の要否が即座に表示される"}, {"@type": "HowToStep", "position": 5, "name": "節税対策を検討する", "text": "「節税Tips」タブで青色申告控除・iDeCo・ふるさと納税などの節税方法を確認し、結果をコピーして活用する"}]}</script>
 </head>
 <body><a href="#main" class="sr-only">本文へスキップ</a>
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TXQGZRF9" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -191,7 +191,10 @@ button, .btn, .btn-primary, .option-btn, [role="button"] { min-height: 48px; min
     <div class="card">
         <div class="card-title">💴 収入・控除の設定</div>
         <label>📅 副業の月収入（売上・報酬）</label>
-        <input type="range" id="side-income" min="10000" max="500000" step="5000" value="50000" oninput="updateCalc()" aria-label="入力フォーム">
+        <div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
+            <input type="range" id="side-income" min="10000" max="500000" step="5000" value="50000" oninput="syncIncome('range')" aria-label="月収入スライダー" style="flex:1;">
+            <input type="number" id="side-income-num" min="10000" max="500000" step="5000" value="50000" oninput="syncIncome('num')" aria-label="月収入入力（円）" style="width:110px;text-align:right;padding:6px 8px;border:1px solid #bbf7d0;border-radius:9px;background:#f0fdf4;font-size:0.85em;">
+        </div>
         <div class="val-display" id="side-income-disp">月 5万円</div>
         <label>💼 本業の年収（課税所得算出のため）</label>
         <select id="main-income" onchange="updateCalc()">
@@ -349,6 +352,19 @@ function fmtW(n) { return n >= 10000 ? Math.floor(n/10000) + '万' + (n%10000>0?
 let selectedType = TYPES[0];
 let typeExpRate = 20;
 
+function syncIncome(from) {
+    const range = document.getElementById('side-income');
+    const num = document.getElementById('side-income-num');
+    if (from === 'range') {
+        num.value = range.value;
+    } else {
+        const v = Math.max(10000, Math.min(500000, Math.round((parseInt(num.value) || 50000) / 5000) * 5000));
+        num.value = v;
+        range.value = v;
+    }
+    updateCalc();
+}
+
 function buildTypeGrid() {
     const grid = document.getElementById('type-grid');
     grid.innerHTML = TYPES.map(t =>
@@ -481,6 +497,9 @@ function renderResult(annual, expense, blueDeduct, income,
                     : `<span class="badge-ok">✓ 確定申告不要</span><p style="font-size:0.75em;color:#16a34a;margin-top:6px;">副業所得が20万円以下（${fmtW(rawIncome)}）。住民税申告は必要な場合あり。</p>`
             }
             ${declareType !== 'white' ? `<p style="font-size:0.72em;color:#64748b;margin-top:6px;">※青色申告を選択中。帳簿記帳・e-Tax提出が必要です。</p>` : ''}
+        </div>
+        <div style="text-align:center;margin-bottom:14px;">
+            <button data-copy="手取り: ${fmtW(takeHome)}（月${fmtW(monthTakeHome)}） | 追加税金: ${fmtW(totalTax)} | 実効税率: ${effRate.toFixed(1)}% | 確定申告: ${needDeclare ? '必要' : '不要'} | 副業税金シミュレーター https://appadaycreator.com/sidejob-tax-simulator/" onclick="sjSafeCp(this.dataset.copy);this.textContent='✓ コピー完了';setTimeout(()=>this.textContent='📋 計算結果をコピー',2000);" style="background:#f0fdf4;border:1px solid #86efac;color:#16a34a;padding:10px 24px;border-radius:8px;font-size:0.85em;font-weight:700;cursor:pointer;width:100%;min-height:44px;">📋 計算結果をコピー</button>
         </div>`;
 }
 
@@ -567,26 +586,12 @@ document.addEventListener('DOMContentLoaded', function(){
 <p style="margin-top:12px;font-size:0.85rem;"><strong>Q. 経費として認められるものは？</strong><br/>副業に直接関係する支出（通信費・書籍・セミナー費等）。按分計算が必要な場合も。</p>
 <p style="margin-top:8px;font-size:0.85rem;"><strong>Q. 住民税の普通徴収を選ぶべき？</strong><br/>副業収入を会社に知られたくない場合は「普通徴収」を選択。確定申告書で選べます。</p>
 </section>
-<div id="page-loader-sj" class="loading" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.95);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;">
-  <div class="spinner" style="width:40px;height:40px;border:4px solid #bbf7d0;border-top-color:#16a34a;border-radius:50%;animation:spin-sj 0.8s linear infinite;"></div>
-  <p class="loading-text" style="margin-top:12px;font-size:0.85rem;color:#6b7280;">読み込み中...</p>
-</div>
-<div class="skeleton" style="display:none;height:3px;background:linear-gradient(90deg,#e5e7eb 25%,#f3f4f6 50%,#e5e7eb 75%);background-size:200% 100%;animation:skeleton-sj 1.5s infinite;"></div>
-<style>@keyframes spin-sj{to{transform:rotate(360deg)}} @keyframes skeleton-sj{0%{background-position:200% 0}100%{background-position:-200% 0}}</style>
-<div style="display:none">
-  <input type="text" name="sj_name" required minlength="1" maxlength="50" placeholder="name" aria-label="name">
-  <input type="number" name="sj_val" min="0" max="9999" step="1" required>
-  <select name="sj_sel" required><option value="a">A</option><option value="b">B</option></select>
-</div>
 <script>
-window.onerror=function(m,s,l){try{console.error("[sj]",m,s,l);}catch(e){}return false;};
-window.addEventListener("unhandledrejection",function(e){try{console.warn("[sj] unhandled",e.reason);}catch(e){}});
 window.sjSafeGet=function(k,d){try{var v=localStorage.getItem(k);return v!==null?JSON.parse(v):d;}catch(e){return d;}};
 window.sjSafeSet=function(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}};
 window.sjSafeRm=function(k){try{localStorage.removeItem(k);return true;}catch(e){return false;}};
 window.sjSafeCp=function(t){try{if(navigator.clipboard){navigator.clipboard.writeText(t);}else{var a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();document.execCommand("copy");document.body.removeChild(a);};}catch(e){}};
 window.sjSave=function(d){try{var h=JSON.parse(localStorage.getItem("sj_hist")||"[]");h.unshift({d:d,t:Date.now()});if(h.length>100)h.pop();localStorage.setItem("sj_hist",JSON.stringify(h));}catch(e){}};
-document.addEventListener("DOMContentLoaded",function(){try{var l=document.getElementById("page-loader-sj");if(l){l.style.opacity="0";l.style.transition="opacity 0.3s";setTimeout(function(){try{l.remove();}catch(e){}},350);}}catch(e){}});
 </script>
 
 <div style="text-align:center;margin:14px auto;max-width:800px;padding:0 16px;">
@@ -627,14 +632,6 @@ document.addEventListener("DOMContentLoaded",function(){try{var l=document.getEl
 <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </div>
 
-<div style="text-align:center;margin:20px auto;max-width:500px;padding:16px;background:#f9fafb;border-radius:10px;">
-  <p style="font-size:14px;font-weight:600;margin-bottom:10px;color:#374151;">このページをシェア</p>
-  <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-    <a href="https://twitter.com/intent/tweet?url=https://appadaycreator.com/sidejob-tax-simulator/&text=副業収入・税金シミュレーター" target="_blank" rel="noopener" style="background:#1DA1F2;color:#fff;padding:8px 16px;border-radius:6px;text-decoration:none;font-size:13px;">Twitter</a>
-    <a href="https://line.me/R/msg/text/?副業収入・税金シミュレーター%0Ahttps://appadaycreator.com/sidejob-tax-simulator/" target="_blank" rel="noopener" style="background:#06C755;color:#fff;padding:8px 16px;border-radius:6px;text-decoration:none;font-size:13px;">LINE</a>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=https://appadaycreator.com/sidejob-tax-simulator/" target="_blank" rel="noopener" style="background:#1877F2;color:#fff;padding:8px 16px;border-radius:6px;text-decoration:none;font-size:13px;">Facebook</a>
-  </div>
-</div>
 
 <section style="background:#f0f9ff;border-top:1px solid #bae6fd;padding:16px;text-align:center;font-size:12px;color:#0369a1;">
   <p style="margin:0 0 4px;font-weight:600;">📧 お問い合わせ</p>
@@ -678,24 +675,20 @@ document.addEventListener("DOMContentLoaded",function(){try{var l=document.getEl
       </div>
     </div>
     <!-- phase9-related-links -->
-    <div class="card p-5 mb-4">
-      <h3 class="font-bold text-gray-700 mb-2 text-sm">🔗 関連サービス</h3>
-      <a href="https://appadaycreator.com/ai-stock-analyzer/" class="block text-sm text-indigo-600 hover:underline py-1">→ 株価分析ツール日本株テクニカル指標・RSI・MACD・銘柄比較</a>
-      <a href="https://appadaycreator.com/bike-cost-advisor/" class="block text-sm text-indigo-600 hover:underline py-1">→ バイク・原付購入維持費診断 | バイクの年間維持費を無料試算 | AppADayCreator</a>
-      <a href="https://appadaycreator.com/car-insurance-advisor/" class="block text-sm text-indigo-600 hover:underline py-1">→ 自動車保険適性診断無料診断・アドバイス</a>
-      <a href="https://appadaycreator.com/carbon-footprint-calculator/" class="block text-sm text-indigo-600 hover:underline py-1">→ カーボンフットプリント計算ツール簡単・無料計算</a>
+    <div class="card" style="padding:20px;margin-bottom:14px;">
+      <h3 style="font-size:0.85em;font-weight:700;color:#374151;margin-bottom:8px;">🔗 関連サービス</h3>
+      <a href="https://appadaycreator.com/ai-stock-analyzer/" style="display:block;font-size:0.82em;color:#16a34a;text-decoration:none;padding:5px 0;border-bottom:1px solid #f1f5f9;">→ 株価分析ツール 日本株テクニカル指標・RSI・MACD・銘柄比較</a>
+      <a href="https://appadaycreator.com/bike-cost-advisor/" style="display:block;font-size:0.82em;color:#16a34a;text-decoration:none;padding:5px 0;border-bottom:1px solid #f1f5f9;">→ バイク・原付購入維持費診断 | 年間維持費を無料試算</a>
+      <a href="https://appadaycreator.com/car-insurance-advisor/" style="display:block;font-size:0.82em;color:#16a34a;text-decoration:none;padding:5px 0;border-bottom:1px solid #f1f5f9;">→ 自動車保険適性診断 無料診断・アドバイス</a>
+      <a href="https://appadaycreator.com/carbon-footprint-calculator/" style="display:block;font-size:0.82em;color:#16a34a;text-decoration:none;padding:5px 0;">→ カーボンフットプリント計算ツール 簡単・無料計算</a>
     </div>
     <!-- rakuten-affiliate-block -->
-    <div class="card p-4 mb-4 text-center" style="border:1px solid #BF0000;background:#fff9f9;">
-      <p class="text-sm text-gray-600 mb-2">🛒 関連商品を楽天市場で探す</p>
+    <div class="card" style="padding:16px;margin-bottom:14px;text-align:center;border:1px solid #BF0000;background:#fff9f9;">
+      <p style="font-size:0.82em;color:#6b7280;margin-bottom:8px;">🛒 関連商品を楽天市場で探す</p>
       <a href="https://hb.afl.rakuten.co.jp/ichiba/541ad0d2.ce2bed12.541ad0d3.a1a2318c/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F%25E5%2589%25AF%25E6%25A5%25AD%2520%25E7%25A8%258E%25E9%2587%2591%2520%25E6%259C%25AC%2F&link_type=text" target="_blank" rel="nofollow sponsored noopener"
          style="display:inline-block;background:#BF0000;color:white;padding:10px 24px;border-radius:8px;font-weight:bold;font-size:14px;text-decoration:none;">
         楽天市場で「副業 税金 本」を検索 →
       </a>
     </div>
-<!-- phase10-rakuten-updated -->
-<!-- phase10-faq-enhanced -->
 </body>
-<!-- 副業・税金・FPに関する詳細情報・基礎知識・活用方法・よくある質問・おすすめコンテンツ・関連サービス案内 -->
-<!-- sidejob-tax-simulator 詳細情報・活用ガイド・よくある質問・おすすめ情報・関連サービス -->
 </html>
