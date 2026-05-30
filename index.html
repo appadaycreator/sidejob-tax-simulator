@@ -110,7 +110,13 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
         /* レンジバー */
         .income-range-bar{height:10px;border-radius:5px;background:#e2e8f0;margin:8px 0;position:relative;overflow:hidden;}
         .income-range-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#16a34a,#4ade80);transition:width .4s;}
-    
+        /* 申告モードボタン */
+        .mode-btn{flex:1;padding:9px 6px;border:2px solid #bbf7d0;background:#fff;border-radius:9px;font-size:0.78em;font-weight:600;color:#475569;cursor:pointer;transition:all .15s;touch-action:manipulation;}
+        .mode-btn.active{border-color:#16a34a;background:#f0fdf4;color:#16a34a;}
+        /* 手取り率バー */
+        .takehome-rate-bar{height:8px;border-radius:4px;background:#e2e8f0;margin:6px 0;overflow:hidden;}
+        .takehome-rate-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#16a34a,#4ade80);transition:width .5s;}
+
 /* Phase 8: Mobile Optimization */
 input, select, textarea { font-size: 16px !important; }
 button, .btn, .btn-primary, .option-btn, [role="button"] { min-height: 48px; min-width: 48px; touch-action: manipulation; }
@@ -197,6 +203,12 @@ button, .btn, .btn-primary, .option-btn, [role="button"] { min-height: 48px; min
     </div>
     <div class="card">
         <div class="card-title">💴 収入・控除の設定</div>
+        <label>👤 申告者区分（確定申告の判定基準に影響）</label>
+        <div style="display:flex;gap:8px;margin-top:4px;margin-bottom:4px;">
+            <button id="mode-employee" class="mode-btn active" onclick="setMode('employee')">🏢 会社員（副業）</button>
+            <button id="mode-freelance" class="mode-btn" onclick="setMode('freelance')">💼 個人事業主・FL</button>
+        </div>
+        <div id="mode-desc" style="font-size:0.73em;color:#64748b;background:#f8fafc;border-radius:6px;padding:5px 8px;margin-bottom:4px;">会社員の副業：年間20万円超で確定申告が必要</div>
         <label>📅 副業の月収入（売上・報酬）</label>
         <div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
             <input type="range" id="side-income" min="10000" max="1000000" step="10000" value="50000" oninput="syncIncome('range')" aria-label="月収入スライダー" style="flex:1;">
@@ -236,6 +248,19 @@ button, .btn, .btn-primary, .option-btn, [role="button"] { min-height: 48px; min
         </div>
         <div class="val-display" id="furusato-disp" style="font-size:1rem;">ふるさと納税: 0円（なし）</div>
         <div id="furusato-limit-hint" style="font-size:0.75em;color:#16a34a;text-align:center;margin-top:2px;background:#f0fdf4;border-radius:6px;padding:4px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+        <label>👨‍👩‍👧 扶養・配偶者控除（所得控除に加算）</label>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:4px;">
+            <label style="display:flex;align-items:center;gap:6px;font-size:0.82em;font-weight:600;color:#475569;margin:0;cursor:pointer;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;flex:1;min-width:120px;touch-action:manipulation;">
+                <input type="checkbox" id="has-spouse" onchange="updateCalc()" style="width:18px;height:18px;min-height:auto;accent-color:#16a34a;"> 配偶者控除（38万）
+            </label>
+            <select id="dependant-count" onchange="updateCalc()" style="flex:1;min-width:120px;">
+                <option value="0">扶養なし</option>
+                <option value="1">扶養1人（+38万）</option>
+                <option value="2">扶養2人（+76万）</option>
+                <option value="3">扶養3人（+114万）</option>
+            </select>
+        </div>
+        <div id="dependant-deduction-display" style="font-size:0.73em;color:#1d4ed8;text-align:center;margin-top:3px;min-height:16px;"></div>
     </div>
     <!-- 結果 -->
     <div id="calc-result"></div>
@@ -322,7 +347,7 @@ const TYPES = [
       tips: ['青色申告65万控除でe-Tax提出なら最大13万円節税', '通信費・PC・書籍・セミナー代は按分で経費計上', 'freee/マネーフォワードで帳簿自動化→青色申告ハードル下がる'] },
     { id: 'arbeit',    name: 'アルバイト',  emoji: '🏪', note: '給与所得扱い（給与所得控除あり）。他社給与として合算。', expRate: 0, taxType: 'salary',
       tips: ['給与所得控除（最低55万）が自動適用されるため雑所得より有利な場合あり', '複数のバイト掛け持ちは年末調整が1社のみ→確定申告が必要', 'iDeCoは給与所得でも活用でき全額所得控除可能'] },
-    { id: 'resale',    name: 'せどり・物販', emoji: '📦', note: '雑所得または事業所得。仕入れ・送料・梱包費が経費に。', expRate: 50, taxType: 'general',
+    { id: 'resale',    name: 'せどり・物販', btnName: '物販/せどり', emoji: '📦', note: '雑所得または事業所得。仕入れ・送料・梱包費が経費に。', expRate: 50, taxType: 'general',
       tips: ['仕入れ原価・送料・梱包資材・手数料（Amazon/メルカリ）を全て経費計上', '在庫は年末棚卸で「期末棚卸高」として経費調整', '年間300万超なら事業所得化・青色申告65万控除が有利'] },
     { id: 'youtube',   name: 'YouTube',    emoji: '🎥', note: '雑所得。機材・通信費・編集ソフトが経費になる場合あり。', expRate: 20, taxType: 'general',
       tips: ['カメラ・マイク・照明・PC等の機材は按分または一括経費', '通信費・Adobe等のサブスクを業務比率で経費計上', 'チャンネル事業化で青色申告65万控除適用可能'] },
@@ -332,9 +357,9 @@ const TYPES = [
       tips: ['新NISAの成長投資枠（年240万）を最大活用→売却益が完全非課税', '特定口座（源泉徴収あり）なら確定申告不要で手間ゼロ', '損益通算で他の株式・投信の損失と相殺して税負担軽減'] },
     { id: 'fx',        name: 'FX',         emoji: '💱', note: '申告分離課税20.315%固定。雑所得（総合課税）と選択可。', expRate: 0, taxType: 'stock',
       tips: ['FXの損失は翌年以降3年間繰越控除が可能', '証拠金取引の必要経費（ツール代・セミナー費）は雑所得の経費に', '損益が少額なら申告漏れより申告した方が繰越損失で有利'] },
-    { id: 'realestate',name: '不動産収入', emoji: '🏠', note: '不動産所得。固定資産税・修繕費・管理費・減価償却が経費。', expRate: 40, taxType: 'general',
+    { id: 'realestate',name: '不動産収入', btnName: '不動産', emoji: '🏠', note: '不動産所得。固定資産税・修繕費・管理費・減価償却が経費。', expRate: 40, taxType: 'general',
       tips: ['減価償却費（建物価格÷耐用年数）は現金支出なしで毎年経費計上', '管理委託費・修繕費・ローン利息・固定資産税も経費', '赤字の場合は給与所得と損益通算で所得税が還付される'] },
-    { id: 'handmade',  name: 'ハンドメイド', emoji: '🎨', note: '雑所得または事業所得。材料費・出展費が経費に。', expRate: 35, taxType: 'general',
+    { id: 'handmade',  name: 'ハンドメイド', btnName: 'ハンドメイド', emoji: '🎨', note: '雑所得または事業所得。材料費・出展費が経費に。', expRate: 35, taxType: 'general',
       tips: ['材料費・道具・出展費（マルシェ等）は全て経費計上可', 'ネットショップのプラットフォーム手数料も経費', '継続的な販売なら事業所得として青色申告を検討'] },
     { id: 'tutor',     name: '家庭教師・講師', btnName: '家庭教師', emoji: '📚', note: '給与または雑所得。個人契約は雑所得。交通費が経費。', expRate: 10, taxType: 'general',
       tips: ['個人契約は雑所得→交通費・教材費・通信費が経費計上可', '業者委託の場合は給与所得扱い→給与所得控除が適用', '複数の生徒に教える場合、事業所得化で青色申告65万控除も可能'] },
@@ -381,6 +406,20 @@ function fmtW(n) { return n >= 10000 ? Math.floor(n/10000) + '万' + (Math.floor
 
 let selectedType = TYPES[0];
 let typeExpRate = 20;
+let employmentMode = 'employee'; // 'employee' or 'freelance'
+let currentFamilyDeductIncome = 0;
+let currentFamilyDeductJumin = 0;
+
+function setMode(mode) {
+    employmentMode = mode;
+    document.getElementById('mode-employee').classList.toggle('active', mode === 'employee');
+    document.getElementById('mode-freelance').classList.toggle('active', mode === 'freelance');
+    const desc = document.getElementById('mode-desc');
+    if (desc) desc.textContent = mode === 'employee'
+        ? '会社員の副業：年間20万円超で確定申告が必要'
+        : '個人事業主・フリーランス：所得48万円超で確定申告が必要';
+    updateCalc();
+}
 
 function syncIncome(from) {
     const range = document.getElementById('side-income');
@@ -498,10 +537,43 @@ function updateCalc() {
     const furusatoAnnual = parseInt(document.getElementById('furusato-annual').value) || 0;
 
     document.getElementById('side-income-disp').textContent = '月 ' + fmt(monthSideIncome) + '円（年 ' + fmtW(annualSideIncome) + '）';
-    // ふるさと納税の上限目安（独身・扶養なし・社会保険料控除15%概算）を表示
-    const furusatoLimit = Math.round(Math.max(0, mainIncome * 0.012 - 2000) / 1000) * 1000;
+
+    // 扶養・配偶者控除の計算
+    const hasSpouse = document.getElementById('has-spouse')?.checked || false;
+    const dependantCount = parseInt(document.getElementById('dependant-count')?.value || 0);
+    // 所得税用控除: 配偶者38万 + 扶養38万/人
+    const spouseDeductIncome = hasSpouse ? 380000 : 0;
+    const dependantDeductIncome = dependantCount * 380000;
+    const totalFamilyDeductIncome = spouseDeductIncome + dependantDeductIncome;
+    // 住民税用控除: 配偶者33万 + 扶養33万/人
+    const spouseDeductJumin = hasSpouse ? 330000 : 0;
+    const dependantDeductJumin = dependantCount * 330000;
+    const totalFamilyDeductJumin = spouseDeductJumin + dependantDeductJumin;
+    // グローバルに保存（比較テーブル用）
+    currentFamilyDeductIncome = totalFamilyDeductIncome;
+    currentFamilyDeductJumin = totalFamilyDeductJumin;
+    // 扶養控除表示
+    const ddisp = document.getElementById('dependant-deduction-display');
+    if (ddisp) {
+        ddisp.textContent = totalFamilyDeductIncome > 0
+            ? '💡 扶養控除合計: ' + fmtW(totalFamilyDeductIncome) + '（住民税: ' + fmtW(totalFamilyDeductJumin) + '）'
+            : '';
+    }
+
+    // ふるさと納税の上限目安（社会保険料14.5%概算・扶養・iDeCo反映版）
+    const socialInsEst = Math.round(mainIncome * 0.145);
+    const furusatoTaxableBase = Math.max(0, mainIncome - salaryDeduction(mainIncome) - socialInsEst - 430000 - idecoAnnual - totalFamilyDeductJumin);
+    const furusatoJuminTaxBase = furusatoTaxableBase * 0.10;
+    const taxableWithSocial = Math.max(0, mainIncome - salaryDeduction(mainIncome) - socialInsEst - 480000 - idecoAnnual - totalFamilyDeductIncome);
+    let furusatoIncomeTaxRate = 0.05;
+    for (const b of TAX_BRACKETS) { if (taxableWithSocial <= b.limit) { furusatoIncomeTaxRate = b.rate; break; } }
+    const furusatoDenom = 0.9 - furusatoIncomeTaxRate * 1.021;
+    const furusatoLimit = furusatoDenom > 0.01
+        ? Math.round(Math.max(0, furusatoJuminTaxBase * 0.2 / furusatoDenom + 2000) / 1000) * 1000
+        : Math.round(Math.max(0, mainIncome * 0.012) / 1000) * 1000;
     const hint = document.getElementById('furusato-limit-hint');
-    if (hint) hint.textContent = '💡 目安上限（独身・扶養なし）: 約' + fmtW(furusatoLimit);
+    const hintLabel = (hasSpouse || dependantCount > 0) ? '（扶養反映済み）' : '（独身・扶養なし）';
+    if (hint) hint.textContent = '💡 目安上限' + hintLabel + ': 約' + fmtW(furusatoLimit);
     const annualExpense = Math.round(annualSideIncome * expRate / 100);
     const monthExpense = Math.round(annualExpense / 12);
     document.getElementById('expense-disp').textContent = '経費 ' + expRate + '%（年 ' + fmtW(annualExpense) + ' / 月 ' + fmtW(monthExpense) + '）';
@@ -531,10 +603,10 @@ function updateCalc() {
     const mainSalaryDeduction = salaryDeduction(mainIncome);
     const mainGrossIncome = mainIncome - mainSalaryDeduction;
 
-    // 追加控除（iDeCoは所得控除、ふるさと納税は住民税控除として別途反映）
-    const additionalDeductions = idecoAnnual; // iDeCoのみ所得控除
+    // 追加控除（iDeCo・扶養控除）
+    const additionalDeductions = idecoAnnual + totalFamilyDeductIncome;
 
-    // 合算課税所得（iDeCo控除を反映）
+    // 合算課税所得（iDeCo・扶養控除を反映）
     const totalTaxable = Math.max(0, mainGrossIncome + sideIncome - BASIC_DEDUCTION - additionalDeductions);
     const mainOnlyTaxable = Math.max(0, mainGrossIncome - BASIC_DEDUCTION - additionalDeductions);
 
@@ -543,10 +615,10 @@ function updateCalc() {
     const mainOnlyTax = Math.round(calcIncomeTax(mainOnlyTaxable) * 1.021);
     const additionalIncomeTax = Math.max(0, totalIncomeTax - mainOnlyTax);
 
-    // 住民税（iDeCo控除・ふるさと納税2,000円自己負担を正確に反映）
+    // 住民税（iDeCo・扶養控除・ふるさと納税2,000円自己負担を正確に反映）
     const JUMIN_BASIC_DEDUCTION = 430000; // 住民税の基礎控除は43万円
-    const totalJuminTaxable = Math.max(0, mainGrossIncome + sideIncome - JUMIN_BASIC_DEDUCTION - idecoAnnual);
-    const mainJuminTaxable = Math.max(0, mainGrossIncome - JUMIN_BASIC_DEDUCTION - idecoAnnual);
+    const totalJuminTaxable = Math.max(0, mainGrossIncome + sideIncome - JUMIN_BASIC_DEDUCTION - idecoAnnual - totalFamilyDeductJumin);
+    const mainJuminTaxable = Math.max(0, mainGrossIncome - JUMIN_BASIC_DEDUCTION - idecoAnnual - totalFamilyDeductJumin);
     const furusatoJuminDeduction = Math.max(0, furusatoAnnual - 2000); // 2,000円は自己負担
     const additionalJuminTax = Math.max(0, Math.round((totalJuminTaxable - mainJuminTaxable) * 0.10) - furusatoJuminDeduction);
 
@@ -554,14 +626,16 @@ function updateCalc() {
     const takeHome = Math.round(annualSideIncome - expense - totalAdditionalTax);
     const effectiveTaxRate = annualSideIncome > 0 ? totalAdditionalTax / annualSideIncome * 100 : 0;
 
-    // 確定申告必要判定（会社員）
+    // 確定申告必要判定（会社員：20万円、個人事業主：48万円）
     const rawSideIncome = annualSideIncome - expense - blueDeduction;
-    const needDeclare = rawSideIncome > 200000;
-    const nearBorder = rawSideIncome > 150000 && rawSideIncome <= 200000;
+    const borderThreshold = employmentMode === 'freelance' ? 480000 : 200000;
+    const nearBorderRange = employmentMode === 'freelance' ? 100000 : 50000;
+    const needDeclare = rawSideIncome > borderThreshold;
+    const nearBorder = rawSideIncome > (borderThreshold - nearBorderRange) && rawSideIncome <= borderThreshold;
 
     renderResult(annualSideIncome, expense, blueDeduction, sideIncome,
         additionalIncomeTax, additionalJuminTax, totalAdditionalTax,
-        takeHome, effectiveTaxRate, needDeclare, nearBorder, declareType, rawSideIncome, idecoAnnual, furusatoAnnual);
+        takeHome, effectiveTaxRate, needDeclare, nearBorder, declareType, rawSideIncome, idecoAnnual, furusatoAnnual, borderThreshold);
     saveInputs();
 }
 
@@ -593,24 +667,27 @@ function renderStockResult(annual, expense, income, tax, takeHome, needDeclare) 
 }
 
 function renderResult(annual, expense, blueDeduct, income,
-    incomeTax, juminTax, totalTax, takeHome, effRate, needDeclare, nearBorder, declareType, rawIncome, idecoAnnual, furusatoAnnual) {
+    incomeTax, juminTax, totalTax, takeHome, effRate, needDeclare, nearBorder, declareType, rawIncome, idecoAnnual, furusatoAnnual, borderThreshold) {
 
+    borderThreshold = borderThreshold || 200000;
     const monthTakeHome = Math.round(takeHome / 12);
+    const takeHomeRate = annual > 0 ? Math.round(takeHome / annual * 100) : 0;
+    const borderLabel = borderThreshold === 480000 ? '48万円ライン（個人事業主）' : '20万円ライン（会社員）';
 
-    // 20万円ボーダー プログレスバー
+    // ボーダー プログレスバー
     let borderBarHtml = '';
     if (!needDeclare) {
-        const pct = Math.min(100, Math.max(0, Math.round(rawIncome / 200000 * 100)));
-        const remaining = Math.max(0, 200000 - rawIncome);
+        const pct = Math.min(100, Math.max(0, Math.round(rawIncome / borderThreshold * 100)));
+        const remaining = Math.max(0, borderThreshold - rawIncome);
         const barColor = pct >= 85 ? '#dc2626' : pct >= 60 ? '#d97706' : '#16a34a';
         borderBarHtml = `
         <div style="margin-bottom:10px;">
             <div style="display:flex;justify-content:space-between;font-size:0.75em;color:#64748b;margin-bottom:4px;">
-                <span>確定申告ボーダーまで残り <strong style="color:${barColor};">${fmtW(remaining)}</strong></span>
+                <span>申告ボーダーまで残り <strong style="color:${barColor};">${fmtW(remaining)}</strong></span>
                 <span>${pct}%</span>
             </div>
             <div class="income-range-bar"><div class="income-range-fill" style="width:${pct}%;background:linear-gradient(90deg,#16a34a,${barColor});"></div></div>
-            <div style="display:flex;justify-content:space-between;font-size:0.7em;color:#94a3b8;margin-top:2px;"><span>0</span><span>20万円ライン</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:0.7em;color:#94a3b8;margin-top:2px;"><span>0</span><span>${borderLabel}</span></div>
         </div>`;
     }
 
@@ -633,6 +710,10 @@ function renderResult(annual, expense, blueDeduct, income,
             <div class="sub">税引後 年間手取り</div>
             <div class="main-val">${fmtW(takeHome)}</div>
             <div class="sub">月換算 約${fmtW(monthTakeHome)} ／ 実効税率 ${effRate.toFixed(1)}%</div>
+            <div style="margin-top:8px;">
+                <div style="display:flex;justify-content:space-between;font-size:0.72em;opacity:0.9;margin-bottom:3px;"><span>手取り率</span><span>${takeHomeRate}%</span></div>
+                <div class="takehome-rate-bar"><div class="takehome-rate-fill" style="width:${Math.min(100,takeHomeRate)}%;background:${takeHomeRate>=70?'linear-gradient(90deg,#4ade80,#86efac)':takeHomeRate>=50?'linear-gradient(90deg,#fde68a,#fcd34d)':'linear-gradient(90deg,#fca5a5,#f87171)'}"></div></div>
+            </div>
         </div>
         <div class="result-grid">
             <div class="result-box red"><div class="val">-${fmtW(totalTax)}</div><div class="lbl">追加税金合計</div></div>
@@ -650,12 +731,12 @@ function renderResult(annual, expense, blueDeduct, income,
             <div style="display:flex;justify-content:space-between;font-size:0.82em;padding:5px 0;"><span>追加住民税</span><span style="font-weight:700;color:#dc2626;">-${fmtW(juminTax)}</span></div>
         </div>
         <div class="card" style="margin-bottom:14px;text-align:center;">
-            <p style="font-size:0.82em;font-weight:700;color:#64748b;margin-bottom:8px;">確定申告の必要性（会社員の場合）</p>
+            <p style="font-size:0.82em;font-weight:700;color:#64748b;margin-bottom:8px;">確定申告の必要性（${employmentMode === 'freelance' ? '個人事業主・フリーランス' : '会社員'}の場合）</p>
             ${needDeclare
-                ? `<span class="badge-required">✗ 確定申告が必要</span><p style="font-size:0.75em;color:#dc2626;margin-top:6px;">副業所得が20万円を超えています（年${fmtW(rawIncome)}）</p><div style="margin-top:10px;background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:10px;text-align:left;"><p style="font-size:0.8em;font-weight:700;color:#92400e;margin-bottom:4px;">🔒 会社バレ防止のポイント</p><p style="font-size:0.75em;color:#78350f;line-height:1.5;">確定申告書の<strong>「住民税・事業税の徴収方法」→「自分で納付（普通徴収）」</strong>を選択すると、副業分の住民税が給与天引きになりません。</p></div>`
+                ? `<span class="badge-required">✗ 確定申告が必要</span><p style="font-size:0.75em;color:#dc2626;margin-top:6px;">副業所得が${fmtW(borderThreshold)}を超えています（年${fmtW(rawIncome)}）</p>${employmentMode === 'employee' ? `<div style="margin-top:10px;background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:10px;text-align:left;"><p style="font-size:0.8em;font-weight:700;color:#92400e;margin-bottom:4px;">🔒 会社バレ防止のポイント</p><p style="font-size:0.75em;color:#78350f;line-height:1.5;">確定申告書の<strong>「住民税・事業税の徴収方法」→「自分で納付（普通徴収）」</strong>を選択すると、副業分の住民税が給与天引きになりません。</p></div>` : ''}`
                 : nearBorder
-                    ? `<span class="badge-caution">⚠️ 20万円ボーダーに注意</span><p style="font-size:0.75em;color:#d97706;margin-top:6px;">現在${fmtW(rawIncome)}。経費・控除の計算に注意を。</p>${borderBarHtml}`
-                    : `<span class="badge-ok">✓ 確定申告不要</span><p style="font-size:0.75em;color:#16a34a;margin-top:6px;">副業所得が20万円以下（${fmtW(rawIncome)}）。住民税申告は必要な場合あり。</p>${borderBarHtml}`
+                    ? `<span class="badge-caution">⚠️ ${fmtW(borderThreshold)}ボーダーに注意</span><p style="font-size:0.75em;color:#d97706;margin-top:6px;">現在${fmtW(rawIncome)}。経費・控除の計算に注意を。</p>${borderBarHtml}`
+                    : `<span class="badge-ok">✓ 確定申告不要</span><p style="font-size:0.75em;color:#16a34a;margin-top:6px;">副業所得が${fmtW(borderThreshold)}以下（${fmtW(rawIncome)}）。住民税申告は必要な場合あり。</p>${borderBarHtml}`
             }
             ${declareType !== 'white' ? `<p style="font-size:0.72em;color:#64748b;margin-top:6px;">※青色申告を選択中。帳簿記帳・e-Tax提出が必要です。</p>` : ''}
         </div>
@@ -678,6 +759,9 @@ function renderComparisonTable(annualSideIncome, expense, idecoAnnual, furusatoA
     const mainGrossIncome = mainIncome - salaryDeduction(mainIncome);
     const JUMIN_BASIC = 430000;
     const furusatoDeduct = Math.max(0, furusatoAnnual - 2000);
+    // 扶養控除をグローバル変数から取得
+    const famDeductI = currentFamilyDeductIncome;
+    const famDeductJ = currentFamilyDeductJumin;
     const scenarios = [
         { key: 'white', label: '白色申告', deduct: 0 },
         { key: 'blue10', label: '青色10万', deduct: 100000 },
@@ -685,11 +769,11 @@ function renderComparisonTable(annualSideIncome, expense, idecoAnnual, furusatoA
     ];
     const results = scenarios.map(s => {
         const si = Math.max(0, annualSideIncome - expense - s.deduct);
-        const totalTaxable = Math.max(0, mainGrossIncome + si - BASIC_DEDUCTION - idecoAnnual);
-        const mainOnlyTaxable = Math.max(0, mainGrossIncome - BASIC_DEDUCTION - idecoAnnual);
+        const totalTaxable = Math.max(0, mainGrossIncome + si - BASIC_DEDUCTION - idecoAnnual - famDeductI);
+        const mainOnlyTaxable = Math.max(0, mainGrossIncome - BASIC_DEDUCTION - idecoAnnual - famDeductI);
         const incomeTax = Math.max(0, Math.round(calcIncomeTax(totalTaxable) * 1.021) - Math.round(calcIncomeTax(mainOnlyTaxable) * 1.021));
-        const totalJumin = Math.max(0, mainGrossIncome + si - JUMIN_BASIC - idecoAnnual);
-        const mainJumin = Math.max(0, mainGrossIncome - JUMIN_BASIC - idecoAnnual);
+        const totalJumin = Math.max(0, mainGrossIncome + si - JUMIN_BASIC - idecoAnnual - famDeductJ);
+        const mainJumin = Math.max(0, mainGrossIncome - JUMIN_BASIC - idecoAnnual - famDeductJ);
         const juminTax = Math.max(0, Math.round((totalJumin - mainJumin) * 0.10) - furusatoDeduct);
         const totalTax = incomeTax + juminTax;
         const takeHome = annualSideIncome - expense - totalTax;
@@ -790,7 +874,10 @@ function saveInputs() {
         declareType: document.getElementById('declare-type').value,
         idecoAnnual: document.getElementById('ideco-annual').value,
         furusatoAnnual: document.getElementById('furusato-annual').value,
-        selectedTypeId: selectedType.id
+        selectedTypeId: selectedType.id,
+        hasSpouse: document.getElementById('has-spouse')?.checked || false,
+        dependantCount: document.getElementById('dependant-count')?.value || '0',
+        employmentMode: employmentMode
     });
 }
 
@@ -825,6 +912,24 @@ function restoreInputs() {
         document.getElementById('furusato-annual-num').value = s.furusatoAnnual;
         var fv = parseInt(s.furusatoAnnual);
         document.getElementById('furusato-disp').textContent = fv > 0 ? 'ふるさと納税: 年'+fmtW(fv)+'控除' : 'ふるさと納税: 0円（なし）';
+    }
+    if (s.hasSpouse && document.getElementById('has-spouse')) {
+        document.getElementById('has-spouse').checked = s.hasSpouse;
+    }
+    if (s.dependantCount && document.getElementById('dependant-count')) {
+        document.getElementById('dependant-count').value = s.dependantCount;
+    }
+    if (s.employmentMode) {
+        employmentMode = s.employmentMode;
+        var modeEl = document.getElementById('mode-' + employmentMode);
+        if (modeEl) {
+            document.querySelectorAll('.mode-btn').forEach(function(b){ b.classList.remove('active'); });
+            modeEl.classList.add('active');
+        }
+        var desc = document.getElementById('mode-desc');
+        if (desc) desc.textContent = employmentMode === 'freelance'
+            ? '個人事業主・フリーランス：所得48万円超で確定申告が必要'
+            : '会社員の副業：年間20万円超で確定申告が必要';
     }
 }
 
