@@ -44,7 +44,7 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
     <style>
         *{box-sizing:border-box;margin:0;padding:0;}
         body{font-family:'Hiragino Sans','Meiryo',sans-serif;background:#fafff5;color:#1e293b;line-height:1.6;}
-        .header{background:linear-gradient(135deg,#14532d 0%,#16a34a 60%,#4ade80 100%);color:#fff;padding:20px 16px 0;text-align:center;}
+        .header{background:linear-gradient(135deg,#14532d 0%,#16a34a 60%,#4ade80 100%);color:#fff;padding:20px 16px 0;text-align:center;position:sticky;top:0;z-index:100;}
         .header h1{font-size:clamp(1.1rem,4vw,1.5rem);font-weight:800;margin-bottom:6px;}
         .header p{font-size:0.82rem;opacity:0.9;margin-bottom:16px;}
         .tabs{display:flex;background:rgba(0,0,0,0.2);border-radius:12px 12px 0 0;max-width:540px;margin:0 auto;}
@@ -211,8 +211,8 @@ button, .btn, .btn-primary, .option-btn, [role="button"] { min-height: 48px; min
         <div id="mode-desc" style="font-size:0.73em;color:#64748b;background:#f8fafc;border-radius:6px;padding:5px 8px;margin-bottom:4px;">会社員の副業：年間20万円超で確定申告が必要</div>
         <label>📅 副業の月収入（売上・報酬）</label>
         <div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
-            <input type="range" id="side-income" min="10000" max="1000000" step="10000" value="50000" oninput="syncIncome('range')" aria-label="月収入スライダー" style="flex:1;">
-            <input type="number" id="side-income-num" min="10000" max="1000000" step="10000" value="50000" oninput="syncIncome('num')" aria-label="月収入入力（円）" style="width:110px;text-align:right;padding:6px 8px;border:1px solid #bbf7d0;border-radius:9px;background:#f0fdf4;font-size:0.85em;">
+            <input type="range" id="side-income" min="5000" max="1000000" step="5000" value="50000" oninput="syncIncome('range')" aria-label="月収入スライダー" style="flex:1;">
+            <input type="number" id="side-income-num" min="5000" max="1000000" step="5000" value="50000" oninput="syncIncome('num')" aria-label="月収入入力（円）" style="width:110px;text-align:right;padding:6px 8px;border:1px solid #bbf7d0;border-radius:9px;background:#f0fdf4;font-size:0.85em;">
         </div>
         <div class="val-display" id="side-income-disp">月 5万円</div>
         <label>💼 本業の年収（課税所得算出のため）</label>
@@ -427,7 +427,7 @@ function syncIncome(from) {
     if (from === 'range') {
         num.value = range.value;
     } else {
-        const v = Math.max(10000, Math.min(1000000, Math.round((parseInt(num.value) || 50000) / 10000) * 10000));
+        const v = Math.max(5000, Math.min(1000000, Math.round((parseInt(num.value) || 50000) / 5000) * 5000));
         num.value = v;
         range.value = v;
     }
@@ -587,6 +587,12 @@ function updateCalc() {
     if (declareType === 'blue10') blueDeduction = 100000;
     if (selectedType.taxType === 'salary') blueDeduction = 0; // バイトは給与所得控除のみ
 
+    // アルバイト（給与所得）：本業+副業合算の給与所得控除増加分を経費の代わりに適用
+    if (selectedType.taxType === 'salary') {
+        const addlSalaryDeduction = salaryDeduction(mainIncome + annualSideIncome) - salaryDeduction(mainIncome);
+        sideIncome = Math.max(0, annualSideIncome - addlSalaryDeduction);
+    }
+
     // 株・FX（申告分離課税）
     if (selectedType.taxType === 'stock') {
         const stockTax = Math.round(sideIncome * 0.20315);
@@ -633,9 +639,27 @@ function updateCalc() {
     const needDeclare = rawSideIncome > borderThreshold;
     const nearBorder = rawSideIncome > (borderThreshold - nearBorderRange) && rawSideIncome <= borderThreshold;
 
+    // 限界税率計算（月+1万円追加した場合の手取り増分）
+    const marginalAnnual = annualSideIncome + 120000;
+    const marginalExpense = Math.round(marginalAnnual * expRate / 100);
+    let marginalSideIncome = marginalAnnual - marginalExpense;
+    if (selectedType.taxType === 'salary') {
+        marginalSideIncome = Math.max(0, marginalAnnual - (salaryDeduction(mainIncome + marginalAnnual) - salaryDeduction(mainIncome)));
+    }
+    marginalSideIncome = Math.max(0, marginalSideIncome - blueDeduction);
+    const marginalTotalTaxable = Math.max(0, mainGrossIncome + marginalSideIncome - BASIC_DEDUCTION - additionalDeductions);
+    const marginalIncomeTax = Math.round(calcIncomeTax(marginalTotalTaxable) * 1.021);
+    const marginalJuminTaxable = Math.max(0, mainGrossIncome + marginalSideIncome - JUMIN_BASIC_DEDUCTION - idecoAnnual - totalFamilyDeductJumin);
+    const marginalAddIncomeTax = Math.max(0, marginalIncomeTax - mainOnlyTax);
+    const marginalAddJuminTax = Math.max(0, Math.round((marginalJuminTaxable - mainJuminTaxable) * 0.10) - furusatoJuminDeduction);
+    const marginalTakeHome = Math.round(marginalAnnual - marginalExpense - marginalAddIncomeTax - marginalAddJuminTax);
+    const marginalGainPerMonth = Math.round((marginalTakeHome - takeHome) / 12);
+    const marginalTaxRatePct = Math.max(0, Math.round((1 - (marginalTakeHome - takeHome) / 120000) * 100));
+
     renderResult(annualSideIncome, expense, blueDeduction, sideIncome,
         additionalIncomeTax, additionalJuminTax, totalAdditionalTax,
-        takeHome, effectiveTaxRate, needDeclare, nearBorder, declareType, rawSideIncome, idecoAnnual, furusatoAnnual, borderThreshold);
+        takeHome, effectiveTaxRate, needDeclare, nearBorder, declareType, rawSideIncome, idecoAnnual, furusatoAnnual, borderThreshold,
+        marginalGainPerMonth, marginalTaxRatePct);
     saveInputs();
 }
 
@@ -667,7 +691,8 @@ function renderStockResult(annual, expense, income, tax, takeHome, needDeclare) 
 }
 
 function renderResult(annual, expense, blueDeduct, income,
-    incomeTax, juminTax, totalTax, takeHome, effRate, needDeclare, nearBorder, declareType, rawIncome, idecoAnnual, furusatoAnnual, borderThreshold) {
+    incomeTax, juminTax, totalTax, takeHome, effRate, needDeclare, nearBorder, declareType, rawIncome, idecoAnnual, furusatoAnnual, borderThreshold,
+    marginalGainPerMonth, marginalTaxRatePct) {
 
     borderThreshold = borderThreshold || 200000;
     const monthTakeHome = Math.round(takeHome / 12);
@@ -710,6 +735,7 @@ function renderResult(annual, expense, blueDeduct, income,
             <div class="sub">税引後 年間手取り</div>
             <div class="main-val">${fmtW(takeHome)}</div>
             <div class="sub">月換算 約${fmtW(monthTakeHome)} ／ 実効税率 ${effRate.toFixed(1)}%</div>
+            <div class="sub" style="font-size:0.75em;opacity:0.8;margin-top:2px;">1日換算 約${fmtW(Math.round(takeHome/365))}</div>
             <div style="margin-top:8px;">
                 <div style="display:flex;justify-content:space-between;font-size:0.72em;opacity:0.9;margin-bottom:3px;"><span>手取り率</span><span>${takeHomeRate}%</span></div>
                 <div class="takehome-rate-bar"><div class="takehome-rate-fill" style="width:${Math.min(100,takeHomeRate)}%;background:${takeHomeRate>=70?'linear-gradient(90deg,#4ade80,#86efac)':takeHomeRate>=50?'linear-gradient(90deg,#fde68a,#fcd34d)':'linear-gradient(90deg,#fca5a5,#f87171)'}"></div></div>
@@ -723,7 +749,7 @@ function renderResult(annual, expense, blueDeduct, income,
         </div>
         <div class="card" style="margin-bottom:14px;">
             <div style="display:flex;justify-content:space-between;font-size:0.82em;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span>副業年収（総売上）</span><span style="font-weight:700;">${fmtW(annual)}</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:0.82em;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span>経費（${document.getElementById('expense-rate').value}%）</span><span style="font-weight:700;color:#dc2626;">-${fmtW(expense)}</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:0.82em;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span>${selectedType.taxType === 'salary' ? '給与所得控除（増加分・自動適用）' : `経費（${document.getElementById('expense-rate').value}%）`}</span><span style="font-weight:700;color:#dc2626;">-${fmtW(selectedType.taxType === 'salary' ? Math.max(0, annual - income) : expense)}</span></div>
             ${blueDeduct > 0 ? `<div style="display:flex;justify-content:space-between;font-size:0.82em;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span>青色申告控除</span><span style="font-weight:700;color:#dc2626;">-${fmtW(blueDeduct)}</span></div>` : ''}
             ${additionalDeductHtml}
             <div style="display:flex;justify-content:space-between;font-size:0.82em;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span>課税対象副業所得</span><span style="font-weight:700;">${fmtW(income)}</span></div>
@@ -741,11 +767,13 @@ function renderResult(annual, expense, blueDeduct, income,
             ${declareType !== 'white' ? `<p style="font-size:0.72em;color:#64748b;margin-top:6px;">※青色申告を選択中。帳簿記帳・e-Tax提出が必要です。</p>` : ''}
         </div>
         ${comparisonHtml}
+        ${marginalGainPerMonth !== undefined ? `<div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #86efac;border-radius:10px;padding:12px 14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;"><div><div style="font-size:0.75em;color:#16a34a;font-weight:700;margin-bottom:3px;">💡 月収入を+1万円増やしたら？</div><div style="font-size:1.15rem;font-weight:800;color:#14532d;">手取り +${fmtW(marginalGainPerMonth)}/月</div></div><div style="text-align:right;"><div style="font-size:0.73em;color:#64748b;margin-bottom:2px;">実効限界税率</div><div style="font-size:1.3rem;font-weight:800;color:${marginalTaxRatePct>=40?'#dc2626':marginalTaxRatePct>=25?'#d97706':'#16a34a'};">${marginalTaxRatePct}%</div></div></div>` : ''}
         <div style="display:flex;gap:8px;margin-bottom:14px;">
             <button data-copy="手取り: ${fmtW(takeHome)}（月${fmtW(monthTakeHome)}） | 追加税金: ${fmtW(totalTax)} | 実効税率: ${effRate.toFixed(1)}% | 確定申告: ${needDeclare ? '必要' : '不要'} | 副業税金シミュレーター https://appadaycreator.com/sidejob-tax-simulator/" onclick="sjSafeCp(this.dataset.copy);this.textContent='✓ コピー完了';setTimeout(()=>this.textContent='📋 コピー',2000);" style="background:#f0fdf4;border:1px solid #86efac;color:#16a34a;padding:10px 16px;border-radius:8px;font-size:0.85em;font-weight:700;cursor:pointer;flex:1;min-height:44px;">📋 コピー</button>
             <button onclick="window.print();" style="background:#f8fafc;border:1px solid #e2e8f0;color:#475569;padding:10px 16px;border-radius:8px;font-size:0.85em;font-weight:700;cursor:pointer;flex:1;min-height:44px;">🖨️ 印刷/PDF</button>
         </div>
         ${tipsHtml}
+        ${renderSimChart(Math.round(annual/12))}
         <div style="display:flex;gap:8px;margin-bottom:14px;">
             <a href="https://line.me/R/share?text=${shareText}" target="_blank" rel="noopener" style="flex:1;display:block;text-align:center;background:#06C755;color:white;padding:10px 8px;border-radius:8px;font-size:12px;font-weight:bold;text-decoration:none;">LINEでシェア</a>
             <a href="https://twitter.com/intent/tweet?text=${shareText}" target="_blank" rel="noopener" style="flex:1;display:block;text-align:center;background:#000;color:white;padding:10px 8px;border-radius:8px;font-size:12px;font-weight:bold;text-decoration:none;">Xでシェア</a>
@@ -804,6 +832,70 @@ function renderComparisonTable(annualSideIncome, expense, idecoAnnual, furusatoA
         <tbody>${rowTH}${rowTax}${rowDiff}</tbody>
         </table>
         <p style="font-size:0.72em;color:#94a3b8;margin-top:8px;">※青色65万はe-Tax提出・複式簿記が条件。青色10万は簡易帳簿でOK。</p>
+    </div>`;
+}
+
+// 月収入別手取りシミュレーションチャート（純CSS版）
+function renderSimChart(baseMonthly) {
+    if (selectedType.taxType === 'stock') return '';
+    const mainIncome = parseInt(document.getElementById('main-income').value) * 10000;
+    const expRate = parseInt(document.getElementById('expense-rate').value);
+    const idecoAnnual = parseInt(document.getElementById('ideco-annual').value) || 0;
+    const furusatoAnnual = parseInt(document.getElementById('furusato-annual').value) || 0;
+    const furusatoDeduct = Math.max(0, furusatoAnnual - 2000);
+    const dt = document.getElementById('declare-type').value;
+    const blueDeduct = selectedType.taxType === 'salary' ? 0 : dt === 'blue65' ? 650000 : dt === 'blue10' ? 100000 : 0;
+    const famDeductI = currentFamilyDeductIncome;
+    const famDeductJ = currentFamilyDeductJumin;
+    const mainSalDeduct = salaryDeduction(mainIncome);
+    const mainGross = mainIncome - mainSalDeduct;
+    const mainOnlyTaxable2 = Math.max(0, mainGross - BASIC_DEDUCTION - idecoAnnual - famDeductI);
+    const mainOnlyTax2 = Math.round(calcIncomeTax(mainOnlyTaxable2) * 1.021);
+    const mainJuminTaxable2 = Math.max(0, mainGross - 430000 - idecoAnnual - famDeductJ);
+
+    const calcTH = (m) => {
+        const annual = m * 12;
+        const expense = Math.round(annual * expRate / 100);
+        let si = annual - expense;
+        if (selectedType.taxType === 'salary') {
+            si = Math.max(0, annual - (salaryDeduction(mainIncome + annual) - mainSalDeduct));
+        }
+        si = Math.max(0, si - blueDeduct);
+        const totalTaxable = Math.max(0, mainGross + si - BASIC_DEDUCTION - idecoAnnual - famDeductI);
+        const addIncomeTax = Math.max(0, Math.round(calcIncomeTax(totalTaxable) * 1.021) - mainOnlyTax2);
+        const juminTaxable = Math.max(0, mainGross + si - 430000 - idecoAnnual - famDeductJ);
+        const addJuminTax = Math.max(0, Math.round((juminTaxable - mainJuminTaxable2) * 0.10) - furusatoDeduct);
+        return Math.round(annual - expense - addIncomeTax - addJuminTax);
+    };
+
+    // 5ポイント（現在を中心に±2段階）
+    const step = Math.max(5000, Math.round(baseMonthly * 0.5 / 5000) * 5000);
+    const points = [
+        Math.max(5000, baseMonthly - step * 2),
+        Math.max(5000, baseMonthly - step),
+        baseMonthly,
+        Math.min(1000000, baseMonthly + step),
+        Math.min(1000000, baseMonthly + step * 2),
+    ];
+    const results = points.map(m => ({ m, th: calcTH(m) }));
+    const maxTH = Math.max(...results.map(r => r.th), 1);
+
+    return `<div class="card" style="margin-bottom:14px;">
+        <div class="card-title">📈 月収入別 手取りシミュレーション</div>
+        <div style="font-size:0.73em;color:#64748b;margin-bottom:10px;">現在の設定で月収入を変えた場合の年間手取り</div>
+        ${results.map(r => {
+            const isCurrent = r.m === baseMonthly;
+            const barPct = Math.round(r.th / maxTH * 100);
+            return `<div style="margin-bottom:7px;">
+                <div style="display:flex;justify-content:space-between;font-size:0.78em;margin-bottom:2px;">
+                    <span style="font-weight:${isCurrent?'800':'500'};color:${isCurrent?'#16a34a':'#475569'};">月${fmtW(r.m)}${isCurrent?' ◀ 現在':''}</span>
+                    <span style="font-weight:${isCurrent?'800':'500'};color:${isCurrent?'#16a34a':'#475569'};">年${fmtW(r.th)}</span>
+                </div>
+                <div style="height:8px;border-radius:4px;background:#e2e8f0;overflow:hidden;">
+                    <div style="height:100%;border-radius:4px;width:${barPct}%;background:${isCurrent?'linear-gradient(90deg,#16a34a,#4ade80)':'#bbf7d0'};"></div>
+                </div>
+            </div>`;
+        }).join('')}
     </div>`;
 }
 
