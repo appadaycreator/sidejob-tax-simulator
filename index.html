@@ -148,7 +148,7 @@ button, .btn, .btn-primary, .option-btn, [role="button"] { min-height: 48px; min
     "headline": "副業税金計算【無料】確定申告いくら？副業収入・所得税シミュレーター",
     "description": "副業収入・経費を入力して確定申告の所得税・住民税を無料計算。20万円ルールの判定も対応。",
     "datePublished": "2026-05-23",
-    "dateModified": "2026-05-29",
+    "dateModified": "2026-05-30",
     "author": {
       "@type": "Organization",
       "name": "appadaycreator"
@@ -213,7 +213,11 @@ button, .btn, .btn-primary, .option-btn, [role="button"] { min-height: 48px; min
             <option value="12000000">〜1,200万円</option>
         </select>
         <label>📦 経費の割合（副業収入に対する%）</label>
-        <input type="range" id="expense-rate" min="0" max="80" step="5" value="20" oninput="updateCalc()" aria-label="入力フォーム">
+        <div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
+            <input type="range" id="expense-rate" min="0" max="80" step="1" value="20" oninput="syncExpense('range')" aria-label="経費率スライダー" style="flex:1;">
+            <input type="number" id="expense-rate-num" min="0" max="80" step="1" value="20" oninput="syncExpense('num')" aria-label="経費率入力（%）" style="width:72px;text-align:right;padding:6px 8px;border:1px solid #bbf7d0;border-radius:9px;background:#f0fdf4;font-size:0.85em;">
+            <span style="font-size:0.85em;color:#475569;font-weight:700;">%</span>
+        </div>
         <div class="val-display" id="expense-disp">経費 20%</div>
         <label>📝 申告方法</label>
         <select id="declare-type" onchange="updateCalc()">
@@ -227,7 +231,7 @@ button, .btn, .btn-primary, .option-btn, [role="button"] { min-height: 48px; min
             <input type="number" id="ideco-annual-num" min="0" max="816000" step="12000" value="0" oninput="syncIdeco('num')" aria-label="iDeCo年間掛金入力" style="width:110px;text-align:right;padding:6px 8px;border:1px solid #bbf7d0;border-radius:9px;background:#f0fdf4;font-size:0.85em;">
         </div>
         <div class="val-display" id="ideco-disp" style="font-size:1rem;">iDeCo: 0円（なし）</div>
-        <label>🗾 ふるさと納税（実効控除額）</label>
+        <label>🗾 ふるさと納税（寄附金額 ※2,000円の自己負担を自動差引）</label>
         <div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
             <input type="range" id="furusato-annual" min="0" max="500000" step="5000" value="0" oninput="syncFurusato('range')" aria-label="ふるさと納税スライダー" style="flex:1;">
             <input type="number" id="furusato-annual-num" min="0" max="500000" step="5000" value="0" oninput="syncFurusato('num')" aria-label="ふるさと納税入力" style="width:110px;text-align:right;padding:6px 8px;border:1px solid #bbf7d0;border-radius:9px;background:#f0fdf4;font-size:0.85em;">
@@ -425,6 +429,19 @@ function syncFurusato(from) {
     updateCalc();
 }
 
+function syncExpense(from) {
+    const range = document.getElementById('expense-rate');
+    const num = document.getElementById('expense-rate-num');
+    if (from === 'range') {
+        num.value = range.value;
+    } else {
+        const v = Math.max(0, Math.min(80, Math.round(parseInt(num.value) || 0)));
+        num.value = v;
+        range.value = v;
+    }
+    updateCalc();
+}
+
 function buildTypeGrid() {
     const grid = document.getElementById('type-grid');
     grid.innerHTML = TYPES.map(t =>
@@ -438,6 +455,7 @@ function buildTypeGrid() {
 function selectType(id) {
     selectedType = TYPES.find(t => t.id === id) || TYPES[0];
     document.getElementById('expense-rate').value = selectedType.expRate;
+    document.getElementById('expense-rate-num').value = selectedType.expRate;
     typeExpRate = selectedType.expRate;
     buildTypeGrid();
     updateCalc();
@@ -494,8 +512,12 @@ function updateCalc() {
     const mainOnlyTax = Math.round(calcIncomeTax(mainOnlyTaxable) * 1.021);
     const additionalIncomeTax = Math.max(0, totalIncomeTax - mainOnlyTax);
 
-    // 住民税（副業分、ふるさと納税は住民税から直接控除）
-    const additionalJuminTax = Math.max(0, Math.round(sideIncome * 0.10) - furusatoAnnual);
+    // 住民税（iDeCo控除・ふるさと納税2,000円自己負担を正確に反映）
+    const JUMIN_BASIC_DEDUCTION = 430000; // 住民税の基礎控除は43万円
+    const totalJuminTaxable = Math.max(0, mainGrossIncome + sideIncome - JUMIN_BASIC_DEDUCTION - idecoAnnual);
+    const mainJuminTaxable = Math.max(0, mainGrossIncome - JUMIN_BASIC_DEDUCTION - idecoAnnual);
+    const furusatoJuminDeduction = Math.max(0, furusatoAnnual - 2000); // 2,000円は自己負担
+    const additionalJuminTax = Math.max(0, Math.round((totalJuminTaxable - mainJuminTaxable) * 0.10) - furusatoJuminDeduction);
 
     const totalAdditionalTax = additionalIncomeTax + additionalJuminTax;
     const takeHome = Math.round(annualSideIncome - expense - totalAdditionalTax);
@@ -567,6 +589,9 @@ function renderResult(annual, expense, blueDeduct, income,
     // 副業タイプ別節税アドバイス
     const tipsHtml = selectedType.tips ? `<div class="card" style="margin-bottom:14px;"><div class="card-title">💡 ${selectedType.name}の節税ポイント</div>${selectedType.tips.map(t=>`<div class="tip-item"><span>✓</span><div>${t}</div></div>`).join('')}</div>` : '';
 
+    // 申告方法別比較表
+    const comparisonHtml = renderComparisonTable(annual, expense, idecoAnnual, furusatoAnnual, declareType, selectedType.taxType);
+
     // SNSシェアリンク（計算結果入り）
     const shareText = encodeURIComponent(`副業（${selectedType.name}）の年間手取りは${fmtW(takeHome)}（月${fmtW(monthTakeHome)}）、実効税率${effRate.toFixed(1)}%でした！確定申告は${needDeclare?'必要':'不要'}。副業税金シミュレーターで計算 https://appadaycreator.com/sidejob-tax-simulator/`);
 
@@ -594,15 +619,17 @@ function renderResult(annual, expense, blueDeduct, income,
         <div class="card" style="margin-bottom:14px;text-align:center;">
             <p style="font-size:0.82em;font-weight:700;color:#64748b;margin-bottom:8px;">確定申告の必要性（会社員の場合）</p>
             ${needDeclare
-                ? `<span class="badge-required">✗ 確定申告が必要</span><p style="font-size:0.75em;color:#dc2626;margin-top:6px;">副業所得が20万円を超えています（年${fmtW(rawIncome)}）</p>`
+                ? `<span class="badge-required">✗ 確定申告が必要</span><p style="font-size:0.75em;color:#dc2626;margin-top:6px;">副業所得が20万円を超えています（年${fmtW(rawIncome)}）</p><div style="margin-top:10px;background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:10px;text-align:left;"><p style="font-size:0.8em;font-weight:700;color:#92400e;margin-bottom:4px;">🔒 会社バレ防止のポイント</p><p style="font-size:0.75em;color:#78350f;line-height:1.5;">確定申告書の<strong>「住民税・事業税の徴収方法」→「自分で納付（普通徴収）」</strong>を選択すると、副業分の住民税が給与天引きになりません。</p></div>`
                 : nearBorder
                     ? `<span class="badge-caution">⚠️ 20万円ボーダーに注意</span><p style="font-size:0.75em;color:#d97706;margin-top:6px;">現在${fmtW(rawIncome)}。経費・控除の計算に注意を。</p>${borderBarHtml}`
                     : `<span class="badge-ok">✓ 確定申告不要</span><p style="font-size:0.75em;color:#16a34a;margin-top:6px;">副業所得が20万円以下（${fmtW(rawIncome)}）。住民税申告は必要な場合あり。</p>${borderBarHtml}`
             }
             ${declareType !== 'white' ? `<p style="font-size:0.72em;color:#64748b;margin-top:6px;">※青色申告を選択中。帳簿記帳・e-Tax提出が必要です。</p>` : ''}
         </div>
-        <div style="text-align:center;margin-bottom:14px;">
-            <button data-copy="手取り: ${fmtW(takeHome)}（月${fmtW(monthTakeHome)}） | 追加税金: ${fmtW(totalTax)} | 実効税率: ${effRate.toFixed(1)}% | 確定申告: ${needDeclare ? '必要' : '不要'} | 副業税金シミュレーター https://appadaycreator.com/sidejob-tax-simulator/" onclick="sjSafeCp(this.dataset.copy);this.textContent='✓ コピー完了';setTimeout(()=>this.textContent='📋 計算結果をコピー',2000);" style="background:#f0fdf4;border:1px solid #86efac;color:#16a34a;padding:10px 24px;border-radius:8px;font-size:0.85em;font-weight:700;cursor:pointer;width:100%;min-height:44px;">📋 計算結果をコピー</button>
+        ${comparisonHtml}
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+            <button data-copy="手取り: ${fmtW(takeHome)}（月${fmtW(monthTakeHome)}） | 追加税金: ${fmtW(totalTax)} | 実効税率: ${effRate.toFixed(1)}% | 確定申告: ${needDeclare ? '必要' : '不要'} | 副業税金シミュレーター https://appadaycreator.com/sidejob-tax-simulator/" onclick="sjSafeCp(this.dataset.copy);this.textContent='✓ コピー完了';setTimeout(()=>this.textContent='📋 コピー',2000);" style="background:#f0fdf4;border:1px solid #86efac;color:#16a34a;padding:10px 16px;border-radius:8px;font-size:0.85em;font-weight:700;cursor:pointer;flex:1;min-height:44px;">📋 コピー</button>
+            <button onclick="window.print();" style="background:#f8fafc;border:1px solid #e2e8f0;color:#475569;padding:10px 16px;border-radius:8px;font-size:0.85em;font-weight:700;cursor:pointer;flex:1;min-height:44px;">🖨️ 印刷/PDF</button>
         </div>
         ${tipsHtml}
         <div style="display:flex;gap:8px;margin-bottom:14px;">
@@ -611,21 +638,79 @@ function renderResult(annual, expense, blueDeduct, income,
         </div>`;
 }
 
+// 申告方法別節税比較テーブルを生成
+function renderComparisonTable(annualSideIncome, expense, idecoAnnual, furusatoAnnual, currentDeclareType, taxType) {
+    if (taxType === 'stock' || taxType === 'salary') return '';
+    const mainIncome = parseInt(document.getElementById('main-income').value);
+    const mainGrossIncome = mainIncome - salaryDeduction(mainIncome);
+    const JUMIN_BASIC = 430000;
+    const furusatoDeduct = Math.max(0, furusatoAnnual - 2000);
+    const scenarios = [
+        { key: 'white', label: '白色申告', deduct: 0 },
+        { key: 'blue10', label: '青色10万', deduct: 100000 },
+        { key: 'blue65', label: '青色65万', deduct: 650000 },
+    ];
+    const results = scenarios.map(s => {
+        const si = Math.max(0, annualSideIncome - expense - s.deduct);
+        const totalTaxable = Math.max(0, mainGrossIncome + si - BASIC_DEDUCTION - idecoAnnual);
+        const mainOnlyTaxable = Math.max(0, mainGrossIncome - BASIC_DEDUCTION - idecoAnnual);
+        const incomeTax = Math.max(0, Math.round(calcIncomeTax(totalTaxable) * 1.021) - Math.round(calcIncomeTax(mainOnlyTaxable) * 1.021));
+        const totalJumin = Math.max(0, mainGrossIncome + si - JUMIN_BASIC - idecoAnnual);
+        const mainJumin = Math.max(0, mainGrossIncome - JUMIN_BASIC - idecoAnnual);
+        const juminTax = Math.max(0, Math.round((totalJumin - mainJumin) * 0.10) - furusatoDeduct);
+        const totalTax = incomeTax + juminTax;
+        const takeHome = annualSideIncome - expense - totalTax;
+        return { ...s, totalTax, takeHome };
+    });
+    const baseWhite = results[0].takeHome;
+
+    let rowTH = `<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:5px 3px;color:#64748b;font-size:0.88em;">年間手取り</td>`;
+    let rowTax = `<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:5px 3px;color:#64748b;font-size:0.88em;">追加税金合計</td>`;
+    let rowDiff = `<tr><td style="padding:5px 3px;color:#64748b;font-size:0.88em;">白色比 節税額</td>`;
+    for (const r of results) {
+        const isCur = r.key === currentDeclareType;
+        const bg = isCur ? 'background:#f0fdf4;' : '';
+        const diff = r.takeHome - baseWhite;
+        rowTH  += `<td style="padding:5px 4px;text-align:center;${bg}font-weight:${isCur?'800':'500'};color:${isCur?'#16a34a':'#374151'};">${fmtW(r.takeHome)}</td>`;
+        rowTax += `<td style="padding:5px 4px;text-align:center;${bg}color:#dc2626;">-${fmtW(r.totalTax)}</td>`;
+        rowDiff+= `<td style="padding:5px 4px;text-align:center;${bg}font-weight:${diff>0?'700':'400'};color:${diff>0?'#16a34a':'#94a3b8'};">${diff>0?'+'+fmtW(diff):'基準'}</td>`;
+    }
+    rowTH += '</tr>'; rowTax += '</tr>'; rowDiff += '</tr>';
+
+    return `<div class="card" style="margin-bottom:14px;">
+        <div class="card-title">📊 申告方法別 節税比較</div>
+        <table style="width:100%;border-collapse:collapse;font-size:0.8em;">
+        <thead><tr style="border-bottom:2px solid #dcfce7;">
+        <th style="padding:5px 3px;text-align:left;color:#94a3b8;font-weight:500;font-size:0.85em;"></th>
+        ${scenarios.map(s=>`<th style="padding:5px 4px;text-align:center;font-size:0.92em;${s.key===currentDeclareType?'color:#16a34a;font-weight:800;':'color:#64748b;font-weight:600;'}">${s.label}${s.key===currentDeclareType?'<br><span style="font-size:0.72em;background:#dcfce7;border-radius:3px;padding:1px 4px;">選択中</span>':''}</th>`).join('')}
+        </tr></thead>
+        <tbody>${rowTH}${rowTax}${rowDiff}</tbody>
+        </table>
+        <p style="font-size:0.72em;color:#94a3b8;margin-top:8px;">※青色65万はe-Tax提出・複式簿記が条件。青色10万は簡易帳簿でOK。</p>
+    </div>`;
+}
+
 function updateZones() {
     const mainIncome = parseInt(document.getElementById('zone-main-income').value);
     const incomes = [200000, 500000, 1000000, 2000000, 3000000, 5000000];
     const mainSalaryDeduct = salaryDeduction(mainIncome);
     const mainGrossIncome = mainIncome - mainSalaryDeduct;
-    const mainOnlyTaxable = Math.max(0, mainGrossIncome - BASIC_DEDUCTION);
+    const idecoZone = parseInt(document.getElementById('ideco-annual')?.value || 0);
+    const mainOnlyTaxable = Math.max(0, mainGrossIncome - BASIC_DEDUCTION - idecoZone);
     const mainOnlyTax = Math.round(calcIncomeTax(mainOnlyTaxable) * 1.021);
-    const currentSideIncome = Math.round(parseInt(document.getElementById('side-income')?.value || 50000) * 12 * 0.8);
+    const expRateZone = parseInt(document.getElementById('expense-rate')?.value || 20);
+    const currentSideIncome = Math.round(parseInt(document.getElementById('side-income')?.value || 50000) * 12 * (1 - expRateZone / 100));
+    const idecoNote = idecoZone > 0 ? `<p style="font-size:0.75em;color:#1d4ed8;margin-bottom:8px;">🏦 iDeCo ${fmtW(idecoZone)}/年 を反映</p>` : '';
 
-    let html = `<table class="zone-table"><tr><th>年間副業所得</th><th>所得税（追加）</th><th>住民税（追加）</th><th>合計税負担</th><th>実効税率</th></tr>`;
+    let html = `${idecoNote}<table class="zone-table"><tr><th>年間副業所得<br><span style="font-size:0.8em;font-weight:400;">（経費後）</span></th><th>所得税（追加）</th><th>住民税（追加）</th><th>合計税負担</th><th>実効税率</th></tr>`;
     for (const si of incomes) {
-        const totalTaxable = Math.max(0, mainGrossIncome + si - BASIC_DEDUCTION);
+        const totalTaxable = Math.max(0, mainGrossIncome + si - BASIC_DEDUCTION - idecoZone);
         const totalTax = Math.round(calcIncomeTax(totalTaxable) * 1.021);
         const addIncomeTax = Math.max(0, totalTax - mainOnlyTax);
-        const addJuminTax = Math.round(si * 0.10);
+        const JUMIN_BASIC = 430000;
+        const totalJumin = Math.max(0, mainGrossIncome + si - JUMIN_BASIC - idecoZone);
+        const mainJumin = Math.max(0, mainGrossIncome - JUMIN_BASIC - idecoZone);
+        const addJuminTax = Math.max(0, Math.round((totalJumin - mainJumin) * 0.10));
         const total = addIncomeTax + addJuminTax;
         const rate = (total / si * 100).toFixed(0);
         const isCurrent = Math.abs(si - currentSideIncome) < 200000;
