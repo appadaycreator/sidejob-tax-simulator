@@ -60,6 +60,7 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
         select:focus,input[type=number]:focus{border-color:#16a34a;background:#fff;}
         input[type=range]{width:100%;accent-color:#16a34a;cursor:pointer;}
         .val-display{font-size:1.4rem;font-weight:800;color:#16a34a;text-align:center;margin:4px 0;}
+        .val-display-sm{font-size:1rem;font-weight:800;color:#16a34a;text-align:center;margin:4px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
         /* 結果 */
         .result-hero{border-radius:12px;padding:20px;text-align:center;margin-bottom:14px;}
         .result-hero.ok{background:linear-gradient(135deg,#14532d,#16a34a);}
@@ -102,10 +103,10 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
         .amz-btn{display:inline-block;background:#ff9900;color:#fff;padding:9px 18px;border-radius:8px;font-size:0.83em;font-weight:700;text-decoration:none;margin:4px;}
         /* 副業タイプ選択 */
         .type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px;}
-        .type-btn{border:2px solid #bbf7d0;background:#fff;border-radius:10px;padding:10px 4px;text-align:center;cursor:pointer;font-size:0.78em;font-weight:600;color:#475569;transition:all .15s;}
+        .type-btn{border:2px solid #bbf7d0;background:#fff;border-radius:10px;padding:8px 2px;text-align:center;cursor:pointer;font-size:0.74em;font-weight:600;color:#475569;transition:all .15s;word-break:keep-all;overflow-wrap:normal;}
         .type-btn:hover{border-color:#16a34a;color:#16a34a;}
         .type-btn.selected{border-color:#16a34a;background:#f0fdf4;color:#16a34a;}
-        .type-btn .emoji{font-size:1.3em;display:block;margin-bottom:3px;}
+        .type-btn .emoji{font-size:1.2em;display:block;margin-bottom:2px;}
         /* レンジバー */
         .income-range-bar{height:10px;border-radius:5px;background:#e2e8f0;margin:8px 0;position:relative;overflow:hidden;}
         .income-range-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#16a34a,#4ade80);transition:width .4s;}
@@ -203,22 +204,19 @@ button, .btn, .btn-primary, .option-btn, [role="button"] { min-height: 48px; min
         </div>
         <div class="val-display" id="side-income-disp">月 5万円</div>
         <label>💼 本業の年収（課税所得算出のため）</label>
-        <select id="main-income" onchange="updateCalc()">
-            <option value="3000000">〜300万円</option>
-            <option value="4000000" selected>〜400万円</option>
-            <option value="5000000">〜500万円</option>
-            <option value="6000000">〜600万円</option>
-            <option value="7000000">〜700万円</option>
-            <option value="9000000">〜900万円</option>
-            <option value="12000000">〜1,200万円</option>
-        </select>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
+            <input type="range" id="main-income" min="200" max="1500" step="10" value="400" oninput="syncMainIncome('range')" aria-label="本業年収スライダー" style="flex:1;">
+            <input type="number" id="main-income-num" min="200" max="1500" step="10" value="400" oninput="syncMainIncome('num')" aria-label="本業年収入力（万円）" style="width:80px;text-align:right;padding:6px 8px;border:1px solid #bbf7d0;border-radius:9px;background:#f0fdf4;font-size:0.85em;">
+            <span style="font-size:0.85em;color:#475569;font-weight:700;">万円</span>
+        </div>
+        <div class="val-display" id="main-income-disp">年収 400万円</div>
         <label>📦 経費の割合（副業収入に対する%）</label>
         <div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
             <input type="range" id="expense-rate" min="0" max="80" step="1" value="20" oninput="syncExpense('range')" aria-label="経費率スライダー" style="flex:1;">
             <input type="number" id="expense-rate-num" min="0" max="80" step="1" value="20" oninput="syncExpense('num')" aria-label="経費率入力（%）" style="width:72px;text-align:right;padding:6px 8px;border:1px solid #bbf7d0;border-radius:9px;background:#f0fdf4;font-size:0.85em;">
             <span style="font-size:0.85em;color:#475569;font-weight:700;">%</span>
         </div>
-        <div class="val-display" id="expense-disp">経費 20%</div>
+        <div class="val-display-sm" id="expense-disp">経費 20%</div>
         <label>📝 申告方法</label>
         <select id="declare-type" onchange="updateCalc()">
             <option value="white">白色申告（経費のみ控除）</option>
@@ -237,6 +235,7 @@ button, .btn, .btn-primary, .option-btn, [role="button"] { min-height: 48px; min
             <input type="number" id="furusato-annual-num" min="0" max="500000" step="5000" value="0" oninput="syncFurusato('num')" aria-label="ふるさと納税入力" style="width:110px;text-align:right;padding:6px 8px;border:1px solid #bbf7d0;border-radius:9px;background:#f0fdf4;font-size:0.85em;">
         </div>
         <div class="val-display" id="furusato-disp" style="font-size:1rem;">ふるさと納税: 0円（なし）</div>
+        <div id="furusato-limit-hint" style="font-size:0.75em;color:#16a34a;text-align:center;margin-top:2px;background:#f0fdf4;border-radius:6px;padding:4px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
     </div>
     <!-- 結果 -->
     <div id="calc-result"></div>
@@ -247,14 +246,12 @@ button, .btn, .btn-primary, .option-btn, [role="button"] { min-height: 48px; min
     <div class="card">
         <div class="card-title">📊 副業所得ゾーン別 税負担シミュレーション</div>
         <label>💼 本業年収</label>
-        <select id="zone-main-income" onchange="updateZones()">
-            <option value="3000000">〜300万円</option>
-            <option value="4000000" selected>〜400万円</option>
-            <option value="5000000">〜500万円</option>
-            <option value="6000000">〜600万円</option>
-            <option value="7000000">〜700万円</option>
-            <option value="9000000">〜900万円</option>
-        </select>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
+            <input type="range" id="zone-main-income" min="200" max="1500" step="10" value="400" oninput="syncZoneIncome('range')" aria-label="ゾーン表年収スライダー" style="flex:1;">
+            <input type="number" id="zone-main-income-num" min="200" max="1500" step="10" value="400" oninput="syncZoneIncome('num')" aria-label="ゾーン表年収入力（万円）" style="width:80px;text-align:right;padding:6px 8px;border:1px solid #bbf7d0;border-radius:9px;background:#f0fdf4;font-size:0.85em;">
+            <span style="font-size:0.85em;color:#475569;font-weight:700;">万円</span>
+        </div>
+        <div class="val-display" id="zone-income-disp" style="font-size:1rem;">年収 400万円</div>
         <div id="zone-table-wrap" style="margin-top:14px;overflow-x:auto;"></div>
     </div>
 </div>
@@ -329,7 +326,7 @@ const TYPES = [
       tips: ['仕入れ原価・送料・梱包資材・手数料（Amazon/メルカリ）を全て経費計上', '在庫は年末棚卸で「期末棚卸高」として経費調整', '年間300万超なら事業所得化・青色申告65万控除が有利'] },
     { id: 'youtube',   name: 'YouTube',    emoji: '🎥', note: '雑所得。機材・通信費・編集ソフトが経費になる場合あり。', expRate: 20, taxType: 'general',
       tips: ['カメラ・マイク・照明・PC等の機材は按分または一括経費', '通信費・Adobe等のサブスクを業務比率で経費計上', 'チャンネル事業化で青色申告65万控除適用可能'] },
-    { id: 'blog',      name: 'ブログ・アフィリ', emoji: '✍️', note: '雑所得または事業所得。サーバー代・ドメイン代・書籍費が経費。', expRate: 15, taxType: 'general',
+    { id: 'blog',      name: 'ブログ・アフィリ', btnName: 'ブログAF', emoji: '✍️', note: '雑所得または事業所得。サーバー代・ドメイン代・書籍費が経費。', expRate: 15, taxType: 'general',
       tips: ['サーバー・ドメイン・テーマ代・広告費は全額経費', '書籍・情報教材も業務関連なら経費計上可', '収入300万以下でも帳簿記帳すれば事業所得として青色申告可能'] },
     { id: 'stock',     name: '株式投資',   emoji: '📈', note: '申告分離課税20.315%固定。NISA口座なら非課税。損益通算可。', expRate: 0, taxType: 'stock',
       tips: ['新NISAの成長投資枠（年240万）を最大活用→売却益が完全非課税', '特定口座（源泉徴収あり）なら確定申告不要で手間ゼロ', '損益通算で他の株式・投信の損失と相殺して税負担軽減'] },
@@ -339,7 +336,7 @@ const TYPES = [
       tips: ['減価償却費（建物価格÷耐用年数）は現金支出なしで毎年経費計上', '管理委託費・修繕費・ローン利息・固定資産税も経費', '赤字の場合は給与所得と損益通算で所得税が還付される'] },
     { id: 'handmade',  name: 'ハンドメイド', emoji: '🎨', note: '雑所得または事業所得。材料費・出展費が経費に。', expRate: 35, taxType: 'general',
       tips: ['材料費・道具・出展費（マルシェ等）は全て経費計上可', 'ネットショップのプラットフォーム手数料も経費', '継続的な販売なら事業所得として青色申告を検討'] },
-    { id: 'tutor',     name: '家庭教師・講師', emoji: '📚', note: '給与または雑所得。個人契約は雑所得。交通費が経費。', expRate: 10, taxType: 'general',
+    { id: 'tutor',     name: '家庭教師・講師', btnName: '家庭教師', emoji: '📚', note: '給与または雑所得。個人契約は雑所得。交通費が経費。', expRate: 10, taxType: 'general',
       tips: ['個人契約は雑所得→交通費・教材費・通信費が経費計上可', '業者委託の場合は給与所得扱い→給与所得控除が適用', '複数の生徒に教える場合、事業所得化で青色申告65万控除も可能'] },
     { id: 'other',     name: 'その他',     emoji: '🔧', note: '雑所得として計算。副業に関連する費用は経費計上できます。', expRate: 20, taxType: 'general',
       tips: ['副業に直接関連する支出はレシート保存で経費計上', '自宅作業なら家賃・光熱費を業務比率で按分', '年間20万円ルールの境界付近は必ず正確に計算を'] },
@@ -380,7 +377,7 @@ function calcIncomeTax(taxableIncome) {
 }
 
 function fmt(n) { return Math.round(n).toLocaleString(); }
-function fmtW(n) { return n >= 10000 ? Math.floor(n/10000) + '万' + (n%10000>0?Math.floor((n%10000)/1000)+'千':'') + '円' : fmt(n) + '円'; }
+function fmtW(n) { return n >= 10000 ? Math.floor(n/10000) + '万' + (Math.floor((n%10000)/1000)>0?Math.floor((n%10000)/1000)+'千':'') + '円' : fmt(n) + '円'; }
 
 let selectedType = TYPES[0];
 let typeExpRate = 20;
@@ -429,6 +426,36 @@ function syncFurusato(from) {
     updateCalc();
 }
 
+function syncMainIncome(from) {
+    const range = document.getElementById('main-income');
+    const num = document.getElementById('main-income-num');
+    if (from === 'range') {
+        num.value = range.value;
+    } else {
+        const v = Math.max(200, Math.min(1500, Math.round((parseInt(num.value) || 400) / 10) * 10));
+        num.value = v;
+        range.value = v;
+    }
+    const v = parseInt(range.value);
+    document.getElementById('main-income-disp').textContent = '年収 ' + v + '万円';
+    updateCalc();
+}
+
+function syncZoneIncome(from) {
+    const range = document.getElementById('zone-main-income');
+    const num = document.getElementById('zone-main-income-num');
+    if (from === 'range') {
+        num.value = range.value;
+    } else {
+        const v = Math.max(200, Math.min(1500, Math.round((parseInt(num.value) || 400) / 10) * 10));
+        num.value = v;
+        range.value = v;
+    }
+    const v = parseInt(range.value);
+    document.getElementById('zone-income-disp').textContent = '年収 ' + v + '万円';
+    updateZones();
+}
+
 function syncExpense(from) {
     const range = document.getElementById('expense-rate');
     const num = document.getElementById('expense-rate-num');
@@ -445,8 +472,8 @@ function syncExpense(from) {
 function buildTypeGrid() {
     const grid = document.getElementById('type-grid');
     grid.innerHTML = TYPES.map(t =>
-        `<button class="type-btn ${t.id === selectedType.id ? 'selected' : ''}" onclick="selectType('${t.id}')">
-            <span class="emoji">${t.emoji}</span>${t.name}
+        `<button class="type-btn ${t.id === selectedType.id ? 'selected' : ''}" onclick="selectType('${t.id}')" aria-label="${t.name}">
+            <span class="emoji">${t.emoji}</span>${t.btnName || t.name}
         </button>`
     ).join('');
     document.getElementById('type-note').textContent = selectedType.note;
@@ -464,13 +491,17 @@ function selectType(id) {
 function updateCalc() {
     const monthSideIncome = parseInt(document.getElementById('side-income').value);
     const annualSideIncome = monthSideIncome * 12;
-    const mainIncome = parseInt(document.getElementById('main-income').value);
+    const mainIncome = parseInt(document.getElementById('main-income').value) * 10000;
     const expRate = parseInt(document.getElementById('expense-rate').value);
     const declareType = document.getElementById('declare-type').value;
     const idecoAnnual = parseInt(document.getElementById('ideco-annual').value) || 0;
     const furusatoAnnual = parseInt(document.getElementById('furusato-annual').value) || 0;
 
     document.getElementById('side-income-disp').textContent = '月 ' + fmt(monthSideIncome) + '円（年 ' + fmtW(annualSideIncome) + '）';
+    // ふるさと納税の上限目安（独身・扶養なし・社会保険料控除15%概算）を表示
+    const furusatoLimit = Math.round(Math.max(0, mainIncome * 0.012 - 2000) / 1000) * 1000;
+    const hint = document.getElementById('furusato-limit-hint');
+    if (hint) hint.textContent = '💡 目安上限（独身・扶養なし）: 約' + fmtW(furusatoLimit);
     const annualExpense = Math.round(annualSideIncome * expRate / 100);
     const monthExpense = Math.round(annualExpense / 12);
     document.getElementById('expense-disp').textContent = '経費 ' + expRate + '%（年 ' + fmtW(annualExpense) + ' / 月 ' + fmtW(monthExpense) + '）';
@@ -531,6 +562,7 @@ function updateCalc() {
     renderResult(annualSideIncome, expense, blueDeduction, sideIncome,
         additionalIncomeTax, additionalJuminTax, totalAdditionalTax,
         takeHome, effectiveTaxRate, needDeclare, nearBorder, declareType, rawSideIncome, idecoAnnual, furusatoAnnual);
+    saveInputs();
 }
 
 function renderStockResult(annual, expense, income, tax, takeHome, needDeclare) {
@@ -557,6 +589,7 @@ function renderStockResult(annual, expense, income, tax, takeHome, needDeclare) 
             <a href="https://line.me/R/share?text=${shareText}" target="_blank" rel="noopener" style="flex:1;display:block;text-align:center;background:#06C755;color:white;padding:10px 8px;border-radius:8px;font-size:12px;font-weight:bold;text-decoration:none;">LINEでシェア</a>
             <a href="https://twitter.com/intent/tweet?text=${shareText}" target="_blank" rel="noopener" style="flex:1;display:block;text-align:center;background:#000;color:white;padding:10px 8px;border-radius:8px;font-size:12px;font-weight:bold;text-decoration:none;">Xでシェア</a>
         </div>`;
+    saveInputs();
 }
 
 function renderResult(annual, expense, blueDeduct, income,
@@ -641,7 +674,7 @@ function renderResult(annual, expense, blueDeduct, income,
 // 申告方法別節税比較テーブルを生成
 function renderComparisonTable(annualSideIncome, expense, idecoAnnual, furusatoAnnual, currentDeclareType, taxType) {
     if (taxType === 'stock' || taxType === 'salary') return '';
-    const mainIncome = parseInt(document.getElementById('main-income').value);
+    const mainIncome = parseInt(document.getElementById('main-income').value) * 10000;
     const mainGrossIncome = mainIncome - salaryDeduction(mainIncome);
     const JUMIN_BASIC = 430000;
     const furusatoDeduct = Math.max(0, furusatoAnnual - 2000);
@@ -691,7 +724,7 @@ function renderComparisonTable(annualSideIncome, expense, idecoAnnual, furusatoA
 }
 
 function updateZones() {
-    const mainIncome = parseInt(document.getElementById('zone-main-income').value);
+    const mainIncome = parseInt(document.getElementById('zone-main-income').value) * 10000;
     const incomes = [200000, 500000, 1000000, 2000000, 3000000, 5000000];
     const mainSalaryDeduct = salaryDeduction(mainIncome);
     const mainGrossIncome = mainIncome - mainSalaryDeduct;
@@ -728,8 +761,14 @@ function switchTab(name, el) {
     if (name === 'zones') {
         // 計算タブの本業年収をゾーン表に同期
         const mainIncome = document.getElementById('main-income');
-        const zoneIncome = document.getElementById('zone-main-income');
-        if (mainIncome && zoneIncome) zoneIncome.value = mainIncome.value;
+        const zoneRange = document.getElementById('zone-main-income');
+        const zoneNum = document.getElementById('zone-main-income-num');
+        const zoneDisp = document.getElementById('zone-income-disp');
+        if (mainIncome && zoneRange) {
+            zoneRange.value = mainIncome.value;
+            if (zoneNum) zoneNum.value = mainIncome.value;
+            if (zoneDisp) zoneDisp.textContent = '年収 ' + parseInt(mainIncome.value) + '万円';
+        }
         updateZones();
     }
 }
@@ -743,7 +782,55 @@ document.addEventListener('click', function(e){
 window.onerror = function(msg,src,line){try{console.error('[AppError]',msg,'at',src+':'+line);}catch(e){}return false;};
 window.addEventListener('unhandledrejection',function(e){console.error('[PromiseError]',e.reason);});
 
+function saveInputs() {
+    sjSafeSet('sj_inputs', {
+        sideIncome: document.getElementById('side-income').value,
+        mainIncome: document.getElementById('main-income').value,
+        expRate: document.getElementById('expense-rate').value,
+        declareType: document.getElementById('declare-type').value,
+        idecoAnnual: document.getElementById('ideco-annual').value,
+        furusatoAnnual: document.getElementById('furusato-annual').value,
+        selectedTypeId: selectedType.id
+    });
+}
+
+function restoreInputs() {
+    var s = sjSafeGet('sj_inputs', null);
+    if (!s) return;
+    if (s.selectedTypeId) {
+        selectedType = TYPES.find(function(t){return t.id===s.selectedTypeId;}) || TYPES[0];
+    }
+    if (s.sideIncome) {
+        document.getElementById('side-income').value = s.sideIncome;
+        document.getElementById('side-income-num').value = s.sideIncome;
+    }
+    if (s.mainIncome) {
+        document.getElementById('main-income').value = s.mainIncome;
+        document.getElementById('main-income-num').value = s.mainIncome;
+        document.getElementById('main-income-disp').textContent = '年収 ' + parseInt(s.mainIncome) + '万円';
+    }
+    if (s.expRate) {
+        document.getElementById('expense-rate').value = s.expRate;
+        document.getElementById('expense-rate-num').value = s.expRate;
+    }
+    if (s.declareType) document.getElementById('declare-type').value = s.declareType;
+    if (s.idecoAnnual) {
+        document.getElementById('ideco-annual').value = s.idecoAnnual;
+        document.getElementById('ideco-annual-num').value = s.idecoAnnual;
+        var iv = parseInt(s.idecoAnnual);
+        document.getElementById('ideco-disp').textContent = iv > 0 ? 'iDeCo: 年'+fmtW(iv)+'（月'+fmtW(Math.round(iv/12))+'）' : 'iDeCo: 0円（なし）';
+    }
+    if (s.furusatoAnnual) {
+        document.getElementById('furusato-annual').value = s.furusatoAnnual;
+        document.getElementById('furusato-annual-num').value = s.furusatoAnnual;
+        var fv = parseInt(s.furusatoAnnual);
+        document.getElementById('furusato-disp').textContent = fv > 0 ? 'ふるさと納税: 年'+fmtW(fv)+'控除' : 'ふるさと納税: 0円（なし）';
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function(){
+    buildTypeGrid();
+    restoreInputs();
     buildTypeGrid();
     updateCalc();
     var l = document.getElementById('page-loader');
