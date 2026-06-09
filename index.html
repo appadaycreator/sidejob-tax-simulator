@@ -19,13 +19,13 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#16a34a">
-    <meta name="description" content="副業の手取り額・所得税・住民税・確定申告必要性を即座に無料シミュレーション。20万円ルール判定・青色申告比較・iDeCo控除対応。11種類の副業に対応した無料計算機。登録不要。">
+    <meta name="description" content="副業の手取り額・税金・確定申告判定を無料計算。月収5万〜100万円対応・20万円ルール判定・青色申告比較。フリーランス・アルバイト・投資・物販など11種類対応。登録不要。">
     <meta name="keywords" content="副業,税金,シミュレーター,確定申告,手取り,所得税,住民税,フリーランス,せどり,アフィリエイト,計算">
     <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <link rel="canonical" href="https://appadaycreator.com/sidejob-tax-simulator/">
     <meta property="og:title" content="副業税金計算【無料】確定申告いくら？副業収入・所得税シミュレーター">
-    <meta property="og:description" content="副業の手取り額・所得税・住民税を無料でシミュレーション。確定申告が必要かどうかも即判定。11種類の副業に対応。">
+    <meta property="og:description" content="副業収入から税負担を即計算。手取り額・所得税・住民税・確定申告必要性が瞬時に分かります。完全無料・登録不要。">
     <meta property="og:type" content="website">
 <meta property="og:locale" content="ja_JP" />
     <meta property="og:url" content="https://appadaycreator.com/sidejob-tax-simulator/">
@@ -35,7 +35,7 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
     <meta property="og:site_name" content="副業収入・税金シミュレーター">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="副業収入・税金シミュレーター｜手取り額を無料計算">
-    <meta name="twitter:description" content="副業の手取り額・税金・確定申告の必要性を無料でシミュレーション。">
+    <meta name="twitter:description" content="副業の税金・確定申告判定を秒速計算。手取り・所得税・住民税が瞬時に分かります。完全無料。">
     <meta name="twitter:image" content="https://appadaycreator.com/sidejob-tax-simulator/ogp.png">
     <!-- Clarity -->
     <script>(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","s3t9vl8h3v");</script>
@@ -105,6 +105,9 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
         /* リンク */
         .related-link{display:block;background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:12px;text-decoration:none;color:#16a34a;font-size:0.85em;font-weight:600;margin-bottom:8px;}
         .amz-btn{display:inline-block;background:#ff9900;color:#fff;padding:9px 18px;border-radius:8px;font-size:0.83em;font-weight:700;text-decoration:none;margin:4px;}
+        .related-tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;}
+        .related-tool-card{display:block;padding:10px;background:#ffffff;border:1px solid #e2e8f0;border-radius:8px;text-decoration:none;color:#1e293b;font-size:0.8em;text-align:center;transition:all 0.2s;}
+        .related-tool-card:hover{border-color:#16a34a;background:#f0fdf4;}
         /* 副業タイプ選択 */
         .type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px;}
         .type-btn{border:2px solid #bbf7d0;background:#fff;border-radius:10px;padding:8px 2px;text-align:center;cursor:pointer;font-size:0.74em;font-weight:600;color:#475569;transition:all .15s;word-break:keep-all;overflow-wrap:normal;}
@@ -191,6 +194,12 @@ ins.adsbygoogle[data-ad-status="unfilled"]{display:none!important;margin:0!impor
 </head>
 <body>
 <div style="background:#4338ca;padding:5px 12px;text-align:right;font-size:.78rem"><a href="/blog/" style="color:#c7d2fe;text-decoration:none;font-weight:600">📖 コラム</a>&nbsp;｜&nbsp;<a href="/" style="color:#c7d2fe;text-decoration:none">ホーム</a></div>
+<!-- r21-breadcrumb -->
+<nav aria-label="パンくずリスト" style="background:#f8fafc;border-bottom:1px solid #e2e8f0;padding:5px 16px;font-size:.78rem;color:#6b7280;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">
+  <a href="/" style="color:#4f46e5;text-decoration:none">ホーム</a>
+  <span style="margin:0 .35rem;color:#9ca3af">›</span>
+  <span style="color:#374151">副業税金計算【無料】確定申告いくら？副業収入・所得税シミュレーター</span>
+</nav>
 <a href="#main" class="sr-only">本文へスキップ</a>
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TXQGZRF9" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
@@ -887,6 +896,47 @@ function renderResult(annual, expense, blueDeduct, income,
                 <p style="font-size:0.73em;color:#475569;margin-top:8px;padding:8px;background:#f8fafc;border-radius:6px;">💡 当シミュレーターの計算結果に基づいて、あなたにぴったりの書籍をおすすめしています。</p>
             </div>`;
         })()}
+        ${(() => {
+            const RELATED_TOOLS = {
+                freelance: [
+                    { emoji: '📊', name: '事業所得計算機', url: '#' },
+                    { emoji: '💼', name: '経費管理ツール', url: '#' },
+                    { emoji: '📈', name: 'FIRE計算機', url: '#' }
+                ],
+                salary: [
+                    { emoji: '💰', name: '手取り計算機', url: '#' },
+                    { emoji: '🏦', name: '給与明細チェック', url: '#' },
+                    { emoji: '📊', name: 'ボーナス計算', url: '#' }
+                ],
+                investment: [
+                    { emoji: '📈', name: 'FIRE計算機', url: '#' },
+                    { emoji: '💵', name: '配当金計算', url: '#' },
+                    { emoji: '📊', name: 'ポートフォリオ診断', url: '#' }
+                ],
+                realestate: [
+                    { emoji: '🏠', name: 'ローン返済シミュ', url: '#' },
+                    { emoji: '📊', name: '家計簿診断', url: '#' },
+                    { emoji: '💼', name: '不動産計算機', url: '#' }
+                ],
+                ecommerce: [
+                    { emoji: '📦', name: 'せどり手数料計', url: '#' },
+                    { emoji: '🛒', name: 'FBA料金計算', url: '#' },
+                    { emoji: '📊', name: '利益率分析', url: '#' }
+                ]
+            };
+            const typeKey = selectedType.name.includes('フリーランス') || selectedType.name.includes('ブログ') ? 'freelance' :
+                           selectedType.name.includes('アルバイト') || selectedType.name.includes('給与') ? 'salary' :
+                           selectedType.name.includes('投資') || selectedType.name.includes('株') ? 'investment' :
+                           selectedType.name.includes('不動産') ? 'realestate' : 'ecommerce';
+            const tools = RELATED_TOOLS[typeKey] || RELATED_TOOLS.freelance;
+            return `<div class="card" style="margin-bottom:14px;">
+                <div class="card-title">🔗 あなたにおすすめの関連ツール</div>
+                <div class="related-tools-grid">
+                ${tools.map((tool, i) => `<a href="${tool.url}" style="pointer-events:none;" class="related-tool-card"><div style="font-size:1.4em;margin-bottom:4px;">${tool.emoji}</div><div style="font-weight:600;font-size:0.75em;">${tool.name}</div></a>`).join('')}
+                </div>
+                <p style="font-size:0.73em;color:#475569;margin-top:8px;padding:8px;background:#f8fafc;border-radius:6px;">💡 副業タイプに応じたおすすめの計算機やツール。各ツールで関連する税務・財務管理をサポートします。</p>
+            </div>`;
+        })()}
         ${marginalGainPerMonth !== undefined ? `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;"><div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:12px;text-align:center;"><div style="font-size:0.72em;color:#1d4ed8;font-weight:700;margin-bottom:4px;">📈 月+1万円</div><div style="font-size:1.1rem;font-weight:800;color:#1d4ed8;">+${fmtW(marginalGainPerMonth)}/月</div><div style="font-size:0.7em;color:#475569;margin-top:3px;">実効税率 ${marginalTaxRatePct}%</div></div><div style="background:#fff1f2;border:1px solid #fca5a5;border-radius:10px;padding:12px;text-align:center;"><div style="font-size:0.72em;color:#dc2626;font-weight:700;margin-bottom:4px;">📉 月-1万円</div><div style="font-size:1.1rem;font-weight:800;color:#dc2626;">-${fmtW(reduceLossPerMonth)}/月</div><div style="font-size:0.7em;color:#475569;margin-top:3px;">現在より節約</div></div><div style="background:#fefce8;border:1px solid #fde68a;border-radius:10px;padding:12px;text-align:center;"><div style="font-size:0.72em;color:#92400e;font-weight:700;margin-bottom:4px;">🎯 申告ボーダー</div><div style="font-size:1.1rem;font-weight:800;color:#92400e;">あと${fmtW(remainToBorder)}</div><div style="font-size:0.7em;color:#475569;margin-top:3px;">約${monthsRemain}ヶ月分</div></div></div>` : ``}
         <div style="display:flex;gap:8px;margin-bottom:14px;">
             <button data-copy="手取り: ${fmtW(takeHome)}（月${fmtW(monthTakeHome)}） | 追加税金: ${fmtW(totalTax)} | 実効税率: ${effRate.toFixed(1)}% | 確定申告: ${needDeclare ? '必要' : '不要'} | 副業税金シミュレーター https://appadaycreator.com/sidejob-tax-simulator/" onclick="sjSafeCp(this.dataset.copy);this.textContent='✓ コピー完了';setTimeout(()=>this.textContent='📋 コピー',2000);" style="background:#f0fdf4;border:1px solid #86efac;color:#16a34a;padding:10px 16px;border-radius:8px;font-size:0.85em;font-weight:700;cursor:pointer;flex:1;min-height:44px;">📋 コピー</button>
@@ -897,6 +947,7 @@ function renderResult(annual, expense, blueDeduct, income,
         <div style="display:flex;gap:8px;margin-bottom:14px;">
             <a href="https://line.me/R/share?text=${shareText}" target="_blank" rel="noopener" style="flex:1;display:block;text-align:center;background:#06C755;color:white;padding:10px 8px;border-radius:8px;font-size:12px;font-weight:bold;text-decoration:none;">LINEでシェア</a>
             <a href="https://twitter.com/intent/tweet?text=${shareText}" target="_blank" rel="noopener" style="flex:1;display:block;text-align:center;background:#000;color:white;padding:10px 8px;border-radius:8px;font-size:12px;font-weight:bold;text-decoration:none;">Xでシェア</a>
+            <a href="mailto:?subject=副業税金シミュレーター結果&body=${encodeURIComponent('副業（' + selectedType.name + '）の計算結果\n\n手取り: ' + fmtW(takeHome) + '（月' + fmtW(monthTakeHome) + '）\n追加税金: ' + fmtW(totalTax) + '\n実効税率: ' + effRate.toFixed(1) + '%\n確定申告: ' + (needDeclare ? '必要' : '不要') + '\n\nhttps://appadaycreator.com/sidejob-tax-simulator/')}" style="flex:1;display:block;text-align:center;background:#0066cc;color:white;padding:10px 8px;border-radius:8px;font-size:12px;font-weight:bold;text-decoration:none;">📧 メール</a>
         </div>
         <div class="card" style="margin-bottom:14px;">
             <div class="card-title">📋 次のステップ・おすすめツール</div>
@@ -1281,6 +1332,77 @@ document.addEventListener('DOMContentLoaded', function(){
   <p style="color:#374151;margin:0 0 .75rem;line-height:1.8">【使い方】①本業の給与年収 ②副業の年間収入 ③副業に関連する経費（PC代・通信費・書籍代等）を入力すると、追加納税の概算額が計算されます。</p>
   <p style="color:#374151;margin:0;line-height:1.8">副業収入が年間20万円以下なら所得税の確定申告は原則不要ですが、住民税の申告は別途必要です。住民税の普通徴収を選ぶことで、会社への副業バレを防ぐことができます。</p>
 </div>
+<!-- r22-editorial -->
+<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:.75rem;padding:1.5rem;margin:1.5rem 0">
+  <h2 style="font-size:1.05rem;font-weight:800;color:#1e3a8a;margin:0 0 1rem;border-left:4px solid #2563eb;padding-left:.75rem">家計・資産管理の基礎データ（総務省・金融庁）</h2>
+  <p style="font-size:.88rem;color:#4b5563;margin:0 0 .75rem">総務省「家計調査」・金融庁データをもとに、日本の家計状況と資産形成の実態を整理しました。</p>
+  <table style="width:100%;border-collapse:collapse;font-size:.83rem">
+    <thead>
+      <tr style="background:#bfdbfe">
+        <th style="padding:.5rem .75rem;text-align:left;border:1px solid #bfdbfe;color:#1e3a8a">項目</th>
+        <th style="padding:.5rem .75rem;text-align:left;border:1px solid #bfdbfe;color:#1e3a8a">データ</th>
+        <th style="padding:.5rem .75rem;text-align:left;border:1px solid #bfdbfe;color:#1e3a8a">出典</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="background:#eff6ff">
+        <td style="padding:.5rem .75rem;border:1px solid #bfdbfe;font-weight:600;color:#1e3a8a">二人以上世帯の月平均消費支出</td>
+        <td style="padding:.5rem .75rem;border:1px solid #bfdbfe"><strong>約31.9万円（2023年平均）</strong></td>
+        <td style="padding:.5rem .75rem;border:1px solid #bfdbfe;font-size:.78rem;color:#6b7280">総務省「家計調査」2023年</td>
+      </tr>
+      <tr style="">
+        <td style="padding:.5rem .75rem;border:1px solid #bfdbfe;font-weight:600;color:#1e3a8a">勤労者世帯の平均貯蓄額</td>
+        <td style="padding:.5rem .75rem;border:1px solid #bfdbfe"><strong>約1,279万円（中央値は370万円）</strong></td>
+        <td style="padding:.5rem .75rem;border:1px solid #bfdbfe;font-size:.78rem;color:#6b7280">金融広報中央委員会「家計の金融行動に関する調査」2023年</td>
+      </tr>
+      <tr style="background:#eff6ff">
+        <td style="padding:.5rem .75rem;border:1px solid #bfdbfe;font-weight:600;color:#1e3a8a">新NISAの年間投資上限</td>
+        <td style="padding:.5rem .75rem;border:1px solid #bfdbfe"><strong>成長投資枠240万円＋つみたて枠120万円＝年間360万円</strong></td>
+        <td style="padding:.5rem .75rem;border:1px solid #bfdbfe;font-size:.78rem;color:#6b7280">金融庁「新しいNISA」</td>
+      </tr>
+      <tr style="">
+        <td style="padding:.5rem .75rem;border:1px solid #bfdbfe;font-weight:600;color:#1e3a8a">投資信託の平均信託報酬（インデックス型）</td>
+        <td style="padding:.5rem .75rem;border:1px solid #bfdbfe"><strong>0.1〜0.2%程度（近年の低コスト化が進む）</strong></td>
+        <td style="padding:.5rem .75rem;border:1px solid #bfdbfe;font-size:.78rem;color:#6b7280">各運用会社のファンド一覧より</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="font-size:.78rem;color:#6b7280;margin:.5rem 0 0">※ 記載データは各出典の公表時点の情報です。最新情報は各公的機関の公式サイトをご確認ください。</p>
+</div>
+<!-- r20-tool-links -->
+<div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:.75rem;padding:1.25rem 1.5rem;margin:2rem 0">
+  <p style="font-weight:700;color:#374151;margin:0 0 .75rem;font-size:.9rem">📖 このツールに関連するコラム記事</p>
+  <ul style="margin:0;padding-left:1.25rem;color:#4b5563;line-height:2">
+    <li><a href="/blog/kakuteishinkoku-guide/" style="color:#4f46e5">確定申告完全ガイド</a></li>
+    <li><a href="/blog/sidejob-tax-guide/" style="color:#4f46e5">副業収入の確定申告・税金</a></li>
+  </ul>
+</div>
+<div id="tool-disclaimer" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:1.25rem 1.5rem;margin:1.5rem 0;font-size:.875rem">
+  <p style="font-weight:700;color:#374151;margin:0 0 .5rem">⚠️ 計算結果の活用にあたって</p>
+  <p style="color:#4b5563;margin:0 0 .5rem;line-height:1.75">計算結果は参考値です。実際の税額・給付額・ローン返済額は個人の状況により異なります。重要な財務判断の際は最新の公式情報をご確認のうえ、ファイナンシャルプランナー・税理士等の専門家にご相談ください。</p>
+  <ul style="margin:0;padding-left:1.25rem;color:#4b5563;line-height:1.9"><li><a href="https://www.fsa.go.jp/policy/nisa2/about/index.html" target="_blank" rel="noopener noreferrer" style="color:#4f46e5;font-size:.85rem">金融庁「NISAについて」</a></li><li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/index2.htm" target="_blank" rel="noopener noreferrer" style="color:#4f46e5;font-size:.85rem">国税庁「タックスアンサー」</a></li></ul>
+</div>
+<section style="margin:2.5rem 0;padding:1.75rem 2rem;background:#f8fafc;border-radius:14px;border:1px solid #e2e8f0">
+<h2 style="font-size:1.1rem;font-weight:800;color:#1e3a5f;margin:0 0 1.2rem;border-left:4px solid #3b82f6;padding-left:.75rem">副業税シミュレーターで賢く節税する方法</h2>
+<h3 style="font-size:.975rem;font-weight:700;color:#1e40af;margin:1.25rem 0 .5rem">副業所得の種類による税金の違い</h3>
+<p style="color:#374151;line-height:1.85;margin:0 0 .75rem">副業の種類によって税金の計算方法が異なります。①雑所得（アフィリエイト・ネット販売・フリーランス等）：収入-経費=所得。②事業所得（継続的な副業）：同上＋青色申告控除可。③給与所得（アルバイト等）：給与所得控除を引いた後の金額。副業が年間20万円超なら確定申告が必要です。</p>
+<h3 style="font-size:.975rem;font-weight:700;color:#1e40af;margin:1.25rem 0 .5rem">社会保険への影響：二重払いを避けるには</h3>
+<p style="color:#374151;line-height:1.85;margin:0 0 .75rem">副業が会社員の「副業」として雇用関係にある場合、両社で社会保険に加入する「二以上事業所勤務」になり、保険料が按分されます。フリーランス副業（業務委託等）では社会保険への影響はありません。年収が一定以上になると国民健康保険料が増加する点に注意が必要です。</p>
+<h3 style="font-size:.975rem;font-weight:700;color:#1e40af;margin:1.25rem 0 .5rem">副業収入の申告を会社にバレずに行う方法</h3>
+<p style="color:#374151;line-height:1.85;margin:0 0 .75rem">住民税の「普通徴収（自分で納付）」を選択することで、副業の税金が給与明細に反映されるのを防げます。確定申告書の第二表「給与・公的年金等以外の所得に係る住民税の徴収方法の選択」欄で「自分で納付」を選択します。ただし副業収入が大きい場合は、他の方法での発覚リスクも考慮しましょう。</p>
+<div style="background:#f0f9ff;border-left:4px solid #3b82f6;padding:1rem 1.25rem;margin:1.25rem 0;border-radius:0 8px 8px 0">
+<p style="font-weight:700;color:#1e40af;margin:0 0 .4rem">まとめ：副業税金対策の3ステップ</p>
+<p style="color:#1e3a8a;line-height:1.8;margin:0;font-size:.925rem">①領収書・インボイスをすべて保管する。②年末に収支を集計して20万円超なら確定申告を準備。③青色申告を検討して節税枠を最大化。副業税シミュレーターを活用して、経費計上後の実際の税負担額を事前に把握しておきましょう。</p>
+</div>
+</section>
+
+<div style="background:#f0f4ff;border-radius:12px;padding:1.25rem 1.5rem;margin:1.5rem 0;border:1px solid #c7d7ff">
+  <p style="font-weight:800;color:#1e3a8a;font-size:.9rem;margin:0 0 .75rem">📚 関連する解説記事</p>
+  <div style="display:flex;flex-direction:column;gap:8px">
+<a href="/blog/sidejob-tax-guide/" style="display:block;padding:10px 14px;background:#fff;border:1px solid #e0e7ff;border-radius:8px;color:#1e40af;font-size:.875rem;font-weight:600;text-decoration:none" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='#fff'">📄 副業の税金と確定申告ガイド</a>
+<a href="/blog/side-job-15-ideas/" style="display:block;padding:10px 14px;background:#fff;border:1px solid #e0e7ff;border-radius:8px;color:#1e40af;font-size:.875rem;font-weight:600;text-decoration:none" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='#fff'">📄 副業15選：月3万円稼ぐ方法</a>
+  </div>
+</div>
 <h2 id="faq-h" style="font-size:1.05rem;font-weight:700;margin-bottom:12px;border-left:4px solid #4f46e5;padding-left:10px;">よくある質問</h2>
   <dl style="line-height:1.8;">
     <dt style="font-weight:600;margin-top:12px;">Q: この計算ツールはどんな場面で役立ちますか？</dt>
@@ -1298,5 +1420,27 @@ document.addEventListener('DOMContentLoaded', function(){
 <li><a href="/blog/sidejob-tax-guide/" style="color:#4f46e5">副業収入の確定申告・税金ガイド</a></li>
   </ul>
 </div>
+<!-- r22-footer-nav -->
+<footer style="background:#1f2937;color:#9ca3af;text-align:center;padding:1.5rem 1rem;margin-top:2rem;font-size:.8rem">
+  <div style="display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:.75rem">
+    <a href="/" style="color:#9ca3af;text-decoration:none">ホーム</a>
+    <a href="/about.html" style="color:#9ca3af;text-decoration:none">運営者情報</a>
+    <a href="/privacy-policy.html" style="color:#9ca3af;text-decoration:none">プライバシーポリシー</a>
+    <a href="/contact.html" style="color:#9ca3af;text-decoration:none">お問い合わせ</a>
+    <a href="/terms.html" style="color:#9ca3af;text-decoration:none">利用規約</a>
+  </div>
+  <p style="margin:0">&copy; 2024-2026 AppADayCreator</p>
+</footer>
+<!-- r17-mobile-ux -->
+<a href="#top" id="back-to-top" aria-label="ページトップへ戻る" style="display:none;position:fixed;bottom:24px;right:20px;background:#4f46e5;color:#fff;border:none;border-radius:50%;width:48px;height:48px;font-size:1.4rem;line-height:48px;text-align:center;text-decoration:none;box-shadow:0 4px 12px rgba(79,70,229,.4);z-index:9000;cursor:pointer" title="ページトップへ">↑</a>
+<script>
+(function(){
+  var btn = document.getElementById('back-to-top');
+  if(!btn) return;
+  window.addEventListener('scroll', function(){
+    btn.style.display = window.scrollY > 400 ? 'block' : 'none';
+  }, {passive:true});
+})();
+</script>
 </body>
 </html>
